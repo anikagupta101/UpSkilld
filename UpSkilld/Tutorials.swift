@@ -20,16 +20,23 @@ import WebKit
 
 struct Tutorials: View {
     var body: some View {
-        VStack {
-            Text("Mark Tilbury: How to Invest for Teenagers")
-                .font(.headline)
-                .padding()
-
-            YouTubePlayerView(videoID: "-C_5hzJCHaY")
-                .frame(height: 250)
-                .cornerRadius(12)
-                .shadow(radius: 5)
-                .padding()
+        ZStack {
+            Image("backgroundImage")
+                .resizable()
+                .scaledToFill()
+                .ignoresSafeArea()
+                .allowsHitTesting(false)
+            VStack {
+                Text("Mark Tilbury: How to Invest for Teenagers")
+                    .font(.headline)
+                    .padding()
+                
+                YouTubePlayerView(videoID: "-C_5hzJCHaY")
+                    .frame(height: 250)
+                    .cornerRadius(12)
+                    .shadow(radius: 5)
+                    .padding()
+            }
         }
     }
 }

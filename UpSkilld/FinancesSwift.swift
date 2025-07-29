@@ -31,12 +31,13 @@ class Finance{
         needs = totalIncome * 0.5
         wants = totalIncome * 0.3
         savings = totalIncome * 0.2
-        print(needs)
-        print(wants)
-        print(savings)
+        //print("Needs: \(needs); Wants: \(wants); Savings: \(savings)")
     }
     
 }
+
+//var text = Finance(totalIncome: 100)
+
 
 
 

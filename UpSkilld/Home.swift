@@ -10,14 +10,21 @@ import SwiftUI
 struct Home: View {
     var body: some View {
         NavigationStack {
-            VStack {
-                Text("Home Screen")
-                    .font(.largeTitle)
-                
-                NavigationLink("Finances", destination: Finances())
-                NavigationLink("Invest", destination: Invest())
+            ZStack {
+                Image("backgroundImage")
+                    .resizable()
+                    .scaledToFill()
+                    .ignoresSafeArea()
+                    .allowsHitTesting(false)
+                VStack {
+                    Text("Home Screen")
+                        .font(.largeTitle)
+                    
+                    NavigationLink("Finances", destination: Finances())
+                    NavigationLink("Invest", destination: Invest())
+                }
+                .padding()
             }
-            .padding()
         }
     }
 }
