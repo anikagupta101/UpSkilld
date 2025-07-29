@@ -15,6 +15,7 @@ struct Home: View {
                     .font(.largeTitle)
                 
                 NavigationLink("Finances", destination: Finances())
+                NavigationLink("Invest", destination: Invest())
             }
             .padding()
         }
