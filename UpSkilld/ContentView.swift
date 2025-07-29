@@ -1,3 +1,4 @@
+
 import SwiftUI
 
 struct ContentView: View {
@@ -9,14 +10,19 @@ struct ContentView: View {
                 Image("logo")
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 150, height: 150)
+                    .frame(width: 300, height: 300)
+                    .offset(x: 0, y: -10)
 
                 VStack(spacing: 5) {
-                    Text("Hi! Welcome to")
-                        .font(.title2)
+                    Text("Welcome to")
+                        .font(.system(size: 32))
+                        .offset(x: 0, y: -50)
+                    
                     Text("UpSkilld")
-                        .font(.largeTitle)
+                        .font(.system(size: 42))
                         .bold()
+                        .bold()
+                        .offset(x: 0, y: -50)
                 }
 
                 VStack(spacing: 20) {
@@ -24,18 +30,26 @@ struct ContentView: View {
                         Text("Login")
                             .frame(maxWidth: .infinity)
                             .padding()
+                            .font(.system(size: 25))
+                            .bold()
                             .background(Color.blue)
                             .foregroundColor(.white)
                             .cornerRadius(12)
+                            .frame(width: 200)
+                            .offset(x: 0, y: -40)
                     }
 
                     NavigationLink(destination: Signup()) {
                         Text("Signup")
                             .frame(maxWidth: .infinity)
                             .padding()
+                            .font(.system(size: 25))
+                            .bold()
                             .background(Color.green)
                             .foregroundColor(.white)
                             .cornerRadius(12)
+                            .frame(width: 200)
+                            .offset(x: 0, y: -30)
                     }
                 }
                 .padding(.horizontal)
