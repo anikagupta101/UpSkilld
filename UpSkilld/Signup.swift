@@ -12,45 +12,52 @@ struct Signup: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
-                    Text("Create an Account")
-                        .font(.largeTitle)
-                        .bold()
-                        .frame(maxWidth: .infinity, alignment: .center)
-                    
-                    Group {
-                        TextField("First Name", text: $firstName)
-                        TextField("Last Name", text: $lastName)
-                        TextField("Email", text: $email)
-                            .keyboardType(.emailAddress)
-                        DatePicker("Birthday", selection: $birthday, displayedComponents: .date)
-                        TextField("Grade", text: $grade)
-                        TextField("Create Username", text: $username)
-                        SecureField("Password", text: $password)
+            ZStack {
+                Image("backgroundImage")
+                    .resizable()
+                    .ignoresSafeArea()
+
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 20) {
+                        Text("Create an Account")
+                            .font(.largeTitle)
+                            .bold()
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .foregroundColor(.black)
+
+                        Group {
+                            TextField("First Name", text: $firstName)
+                            TextField("Last Name", text: $lastName)
+                            TextField("Email", text: $email)
+                                .keyboardType(.emailAddress)
+                            DatePicker("Birthday", selection: $birthday, displayedComponents: .date)
+                                .foregroundColor(.white)
+                            TextField("Grade", text: $grade)
+                            TextField("Create Username", text: $username)
+                            SecureField("Password", text: $password)
+                        }
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+
+                        NavigationLink(destination: Login(), isActive: $goToLogin) {
+                            EmptyView()
+                        }
+
+                        Button(action: {
+                            goToLogin = true
+                        }) {
+                            Text("Sign Up")
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.blue)
+                                .foregroundColor(.white)
+                                .cornerRadius(12)
+                        }
+                        .padding(.top, 10)
+
+                        Spacer()
                     }
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-
-                    NavigationLink(destination: Login()) {
-
-                    }
-
-                    Button(action: {
-
-                        goToLogin = true
-                    }) {
-                        Text("Sign Up")
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(12)
-                    }
-                    .padding(.top, 10)
-
-                    Spacer()
+                    .padding()
                 }
-                .padding()
             }
             .navigationTitle("Sign Up")
         }
