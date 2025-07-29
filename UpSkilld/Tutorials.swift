@@ -23,7 +23,6 @@ struct Tutorials: View {
         ZStack {
             Image("backgroundImage")
                 .resizable()
-                .scaledToFill()
                 .ignoresSafeArea()
                 .allowsHitTesting(false)
             VStack {

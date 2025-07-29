@@ -12,7 +12,6 @@ struct Invest: View {
         NavigationStack {ZStack {
             Image("backgroundImage")
                 .resizable()
-                .scaledToFill()
                 .ignoresSafeArea()
                 .allowsHitTesting(false)
             VStack {

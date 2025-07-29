@@ -12,9 +12,10 @@ struct Resources: View {
         ZStack {
             Image("backgroundImage")
                 .resizable()
-                .scaledToFill()
                 .ignoresSafeArea()
-                .allowsHitTesting(false)
+               // .scaledToFill()
+               // .allowsHitTesting(false)
+            
             VStack {
                 Text("Welcome to resources!")
                     .font(.title)
@@ -63,9 +64,10 @@ struct Resources: View {
                 Link(destination: URL(string:"https://www.creditkarma.com/financial-planning/i/budgeting-for-teens")!) {
                     Text("Credit Karma - Budgeting for teens: 18 tips for growing your money young")
                 } //closes Link
-                .padding()
             } //closes VStack
-        } //closes var body
+            .padding()
+            .padding()
+        } //closes z stack
     }
 } //closes struct
 
