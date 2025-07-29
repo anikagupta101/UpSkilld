@@ -8,7 +8,15 @@
 import SwiftUI
 import WebKit
 
-//Mark Tilbury: How to Invest for Beginners in 2025
+//Mark Tilbury: How to Invest for Beginners in 2025: https://www.youtube.com/watch?v=Ay4fmZdZqJE
+
+//Financial Literacy - Full Video: https://www.youtube.com/watch?v=4j2emMn7UaI
+
+//summary of Khan Academy's 30 hour financial literacy course in 1 hour: https://www.youtube.com/watch?v=ouvbeb2wSGA
+
+//Khan Academy finance playlist: https://www.youtube.com/playlist?list=PL9ECA8AEB409B3E4F
+
+//Personal finance for teenagers playlist: https://www.youtube.com/playlist?list=PLUpA0gs6ldq5yr9CoOvVu_CnTGzr3mdj9
 
 struct Tutorials: View {
     var body: some View {
