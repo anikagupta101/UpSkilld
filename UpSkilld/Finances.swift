@@ -8,31 +8,41 @@
 import SwiftUI
 
 struct Finances: View {
-    @State private var currentBalance: Int = 0
-    @State private var expenseText: String = ""
     @State private var incomeText: String = ""
-    
+    @State private var showBreakdown = false
+
     var body: some View {
-        VStack {
+        VStack(spacing: 20) {
             Text("Finances")
                 .font(.largeTitle)
                 .bold()
-            Text("Current Balance: $\(currentBalance)")
-                            .font(.title2)
 
-            TextField("Add Expense", text: $expenseText)
-                            .keyboardType(.numberPad)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .padding(.horizontal)
+            TextField("Enter your income", text: $incomeText)
+                .keyboardType(.numberPad)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding(.horizontal)
 
-            TextField("Add Income", text: $incomeText)
-                            .keyboardType(.numberPad)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .padding(.horizontal)
-            Button("Smart Check") {
-                
+            Button("Save") {
+                showBreakdown = true
             }
+            .padding()
+            .background(Color.blue)
+            .foregroundColor(.white)
+            .cornerRadius(10)
+
+            if showBreakdown {
+                VStack(spacing: 10) {
+                    Text("Needs")
+                    Text("Wants")
+                    Text("Savings")
+                }
+                .font(.title2)
+                .padding(.top)
+            }
+
+            Spacer()
         }
+        .padding()
     }
 }
 

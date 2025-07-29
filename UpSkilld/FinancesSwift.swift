@@ -6,6 +6,15 @@
 //
 
 import Foundation
+import SwiftUI
+
+struct FinancesView: View {
+    var body: some View {
+        VStack {
+            Text("Finances Swift")
+        }
+        .navigationTitle("Finances")
+        .navigationBarTitleDisplayMode(.inline)
 
 
 class Finance{
