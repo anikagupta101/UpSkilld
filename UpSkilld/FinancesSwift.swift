@@ -10,24 +10,24 @@ import Foundation
 
 class Finance{
     var totalIncome: Double
-    var needs: Double
-    var wants: Double
-    var savings: Double
+    var needs = 0.0
+    var wants = 0.0
+    var savings = 0.0
     
-    init(totalIncome: Double, needs: Double, wants: Double, savings: Double){
+    init(totalIncome: Double){
         self.totalIncome = totalIncome
-        self.needs = needs
-        self.wants = wants
-        self.savings = savings
     }
     
-    func Calculations() {
-        needs = needs * 0.5
-        wants = wants * 0.3
-        savings = savings * 0.2
-        
+    func calculations() {
+        needs = totalIncome * 0.5
+        wants = totalIncome * 0.3
+        savings = totalIncome * 0.2
+        //print("Needs: \(needs); Wants: \(wants); Savings: \(savings)")
     }
 }
+
+//var text = Finance(totalIncome: 100)
+
 
 
 
