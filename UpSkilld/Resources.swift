@@ -64,9 +64,8 @@ struct Resources: View {
                 Link(destination: URL(string:"https://www.creditkarma.com/financial-planning/i/budgeting-for-teens")!) {
                     Text("Credit Karma - Budgeting for teens: 18 tips for growing your money young")
                 } //closes Link
+                .padding()
             } //closes VStack
-            .padding()
-            .padding()
         } //closes z stack
     }
 } //closes struct
