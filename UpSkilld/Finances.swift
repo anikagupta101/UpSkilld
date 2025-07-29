@@ -8,8 +8,31 @@
 import SwiftUI
 
 struct Finances: View {
+    @State private var currentBalance: Int = 0
+    @State private var expenseText: String = ""
+    @State private var incomeText: String = ""
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack {
+            Text("Finances")
+                .font(.largeTitle)
+                .bold()
+            Text("Current Balance: $\(currentBalance)")
+                            .font(.title2)
+
+            TextField("Add Expense", text: $expenseText)
+                            .keyboardType(.numberPad)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .padding(.horizontal)
+
+            TextField("Add Income", text: $incomeText)
+                            .keyboardType(.numberPad)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .padding(.horizontal)
+            Button("Smart Check") {
+                
+            }
+        }
     }
 }
 
