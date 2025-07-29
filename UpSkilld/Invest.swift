@@ -16,7 +16,7 @@ struct Invest: View {
                 Text("Investing!")
                     .font(.title)
                     .fontWeight(.bold)
-                    .frame(width: 300, height: 300)
+                    .frame(width: 300, height: 50)
                 Text("Daily Tip:")
                     .font(.title)
                     .padding()
