@@ -9,7 +9,9 @@ import SwiftUI
 
 struct Finances: View {
     @State private var incomeText: String = ""
+    @State private var finance: Finance? = nil
     @State private var showBreakdown = false
+    
 
     var body: some View {
         VStack(spacing: 20) {
@@ -23,7 +25,15 @@ struct Finances: View {
                 .padding(.horizontal)
 
             Button("Save") {
-                showBreakdown = true
+                if let income = Double(incomeText) {
+                    let newFinance = Finance(totalIncome : income)
+                    newFinance.calculations()
+                    finance = newFinance
+                    showBreakdown = true
+                } else {
+                    showBreakdown = false
+                }
+                
             }
             .padding()
             .background(Color.blue)
@@ -32,9 +42,9 @@ struct Finances: View {
 
             if showBreakdown {
                 VStack(spacing: 10) {
-                    Text("Needs")
-                    Text("Wants")
-                    Text("Savings")
+                    Text("Needs (50%): $\(finance!.needs, specifier: "%.2f")")
+                    Text("Wants (30%): $\(finance!.wants, specifier: "%.2f")")
+                    Text("Savings (20%): $\(finance!.savings, specifier: "%.2f")")
                 }
                 .font(.title2)
                 .padding(.top)
