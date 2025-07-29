@@ -31,10 +31,10 @@ struct Signup: View {
                             TextField("Email", text: $email)
                                 .keyboardType(.emailAddress)
                             DatePicker("Birthday", selection: $birthday, displayedComponents: .date)
-                                .foregroundColor(.white)
+                                .foregroundColor(.black)
                             TextField("Grade", text: $grade)
                             TextField("Create Username", text: $username)
-                            SecureField("Password", text: $password)
+                            SecureField("Create Password", text: $password)
                         }
                         .textFieldStyle(RoundedBorderTextFieldStyle())
 
