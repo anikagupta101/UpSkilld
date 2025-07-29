@@ -9,9 +9,20 @@ import SwiftUI
 
 struct Login: View {
     var body: some View {
-        Text("Login")
-        Text("temp link to homepage:")
-        NavigationLink("Home", destination: Home())
+        NavigationStack{
+            ZStack {
+                Image("backgroundImage")
+                    .resizable()
+                    .scaledToFill()
+                    .ignoresSafeArea()
+                    .allowsHitTesting(false)
+                VStack{
+                    Text("Login")
+                    Text("temp link to homepage:")
+                    NavigationLink("Home", destination: Home())
+                }
+            }
+        }
     }
 }
 

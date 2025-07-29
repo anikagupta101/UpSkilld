@@ -9,7 +9,12 @@ import SwiftUI
 
 struct Invest: View {
     var body: some View {
-        NavigationStack {
+        NavigationStack {ZStack {
+            Image("backgroundImage")
+                .resizable()
+                .scaledToFill()
+                .ignoresSafeArea()
+                .allowsHitTesting(false)
             VStack {
                 //code for daily tip, beginner tips navigation, tutorials navigation, and resources navigation
                 
@@ -46,8 +51,9 @@ struct Invest: View {
                 } //closes NavigationLink
             } //closes VStack
         } //closes NavigationStack
-    } //closes var body
-} //closes struct
+        } //closes var body
+    } //closes struct
+} //closes z stack
 
 #Preview {
     Invest()

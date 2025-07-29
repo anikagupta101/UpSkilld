@@ -9,7 +9,14 @@ import SwiftUI
 
 struct Tips: View {
     var body: some View {
-        Text("Welcome to beginner tips!")
+        ZStack {
+            Image("backgroundImage")
+                .resizable()
+                .scaledToFill()
+                .ignoresSafeArea()
+                .allowsHitTesting(false)
+            Text("Welcome to beginner tips!")
+        }
     }
 }
 
