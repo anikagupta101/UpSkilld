@@ -21,5 +21,13 @@ class Finance{
         self.savings = savings
     }
     
-    
+    func Calculations() {
+        needs = needs * 0.5
+        wants = wants * 0.3
+        savings = savings * 0.2
+        
+    }
 }
+
+
+
