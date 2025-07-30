@@ -1,22 +1,8 @@
-//
-//  ShortFormContent.swift
-//  UpSkilld
-//
-//  Created by Scholar on 7/30/25.
-//
-
-//
-//  shortform2.swift
-//  shortFormContent
-//
-//  Created by Scholar on 7/30/25.
-//
-
 import SwiftUI
 import AVKit
 import WebKit
 
-// MARK: - Data Model
+// MARK: - Model
 struct ShortVideo2: Identifiable {
     let id = UUID()
     let title: String
@@ -28,13 +14,13 @@ struct ShortVideo2: Identifiable {
 // MARK: - YouTube Player View (WebView)
 struct YouTubePlayerView2: UIViewRepresentable {
     let videoID: String
-
+    
     func makeUIView(context: Context) -> WKWebView {
         let webView = WKWebView()
         webView.scrollView.isScrollEnabled = false
         return webView
     }
-
+    
     func updateUIView(_ uiView: WKWebView, context: Context) {
         let embedHTML = """
         <html>
@@ -76,20 +62,19 @@ struct YouTubePlayerView2: UIViewRepresentable {
     }
 }
 
-// MARK: - Video Slide (Single Page)
+// MARK: - Video Slide View
 struct VideoSlideView: View {
     let video: ShortVideo2
     @State private var player: AVPlayer?
-
+    
     var body: some View {
         ZStack(alignment: .bottomLeading) {
-            // Video Source
-            if let url2 = video.videoURL {
-                VideoPlayer(player: AVPlayer(url: url2))
+            if let url = video.videoURL {
+                VideoPlayer(player: AVPlayer(url: url))
                     .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
                     .clipped()
                     .onAppear {
-                        player = AVPlayer(url: url2)
+                        player = AVPlayer(url: url)
                         player?.isMuted = true
                         player?.play()
                     }
@@ -102,40 +87,40 @@ struct VideoSlideView: View {
                     .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
                     .clipped()
             }
-
-            // Overlay
+            
+            // Overlay text/buttons
             VStack(alignment: .leading, spacing: 10) {
                 Text(video.title)
                     .font(.title2)
                     .bold()
                     .foregroundColor(.white)
-
+                
                 Text("@\(video.username)")
                     .font(.subheadline)
                     .foregroundColor(.white.opacity(0.8))
-
+                
                 HStack(spacing: 20) {
                     Button { } label: {
-                        Image(systemName: "heart.fill").foregroundColor(.white)
+                        Image(systemName: "heart.fill")
+                            .foregroundColor(.white)
                     }
                     Button { } label: {
-                        Image(systemName: "square.and.arrow.up").foregroundColor(.white)
+                        Image(systemName: "square.and.arrow.up")
+                            .foregroundColor(.white)
                     }
                 }
             }
-            .cornerRadius(0)
-            .shadow(radius: 0)
-            .padding(0)
+            .padding()
         }
         .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
         .ignoresSafeArea()
     }
 }
 
-// MARK: - Feed View (Scroll Paging)
+// MARK: - Feed View
 struct FeedView2: View {
     let videos: [ShortVideo2]
-
+    
     var body: some View {
         GeometryReader { geometry in
             TabView {
@@ -153,28 +138,21 @@ struct FeedView2: View {
     }
 }
 
-// MARK: - Entry Point
+// MARK: - Main ShortFormContent View
 struct ShortFormContent: View {
     let sampleVideos: [ShortVideo2] = [
-        ShortVideo2(
-            title: "Intro to Saving",
-            username: "money_maven",
-            videoURL: nil,
-            youtubeID: "lWu2fw6APM4"
-        ),
-        ShortVideo2(
-            title: "Investing 101",
-            username: "wealth_builder",
-            videoURL: nil,
-            youtubeID: "vKuK8AVL-1o"
-        )
-       
+        ShortVideo2(title: "Intro to Saving", username: "money_maven", videoURL: nil, youtubeID: "lWu2fw6APM4"),
+        ShortVideo2(title: "Investing 101", username: "wealth_builder", videoURL: nil, youtubeID: "vKuK8AVL-1o")
     ]
-
+    
     var body: some View {
         FeedView2(videos: sampleVideos)
     }
 }
+
+// MARK: - Preview
 #Preview {
-    ShortFormContent()
+    NavigationStack {  // Wrap in NavigationStack here for preview
+        ShortFormContent()
+    }
 }
