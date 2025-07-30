@@ -183,9 +183,13 @@ struct ShortFormContent: View {
     let sampleVideos: [ShortVideo2] = [
         // Using sample YouTube IDs for demonstration
         // Note: For actual app, you'd likely fetch real vertical video URLs
-        ShortVideo2(title: "Calming River Flow", username: "finance!", videoURL: nil, youtubeID: "lWu2fw6APM4"),
-        ShortVideo2(title: "Quick Morning Stretch", username: "investing", videoURL: nil, youtubeID: "vKuK8AVL-1o"),
-        
+        ShortVideo2(title: "Finance", username: "finance!", videoURL: nil, youtubeID: "lWu2fw6APM4"),
+        ShortVideo2(title: "Investing", username: "investing", videoURL: nil, youtubeID: "vKuK8AVL-1o"),
+        ShortVideo2(title: "Millionare Mindset", username: "millionares", videoURL: nil, youtubeID: "l52CNKgAP7g"),
+        ShortVideo2(title: "Student Discounts", username: "discounts", videoURL: nil, youtubeID: "gjx_zc0Ut7U"),
+        ShortVideo2(title: "Passive Income", username: "passiveincome", videoURL: nil, youtubeID: "aGLjcLFup94"),
+        ShortVideo2(title: "Student Scholarships", username: "scholarships", videoURL: nil, youtubeID: "NF_dqRMssa8"),
+        ShortVideo2(title: "FAFSA", username: "fafsa", videoURL: nil, youtubeID: "XrByfVYcugU"),
     ]
     
     var body: some View {
