@@ -34,6 +34,10 @@ class Finance{
         //print("Needs: \(needs); Wants: \(wants); Savings: \(savings)")
     }
     
+    func smartCheck(){
+        
+    }
+    
 }
 
 //var text = Finance(totalIncome: 100)
