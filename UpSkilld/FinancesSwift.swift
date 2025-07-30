@@ -8,15 +8,6 @@
 import Foundation
 import SwiftUI
 
-/*struct FinancesView: View {
-    var body: some View {
-        VStack {
-            Text("Finances Swift")
-        }
-        .navigationTitle("Finances")
-        .navigationBarTitleDisplayMode(.inline)
-*/
-
 class Finance{
     var totalIncome: Double
     var needs = 0.0
@@ -32,10 +23,6 @@ class Finance{
         wants = totalIncome * 0.3
         savings = totalIncome * 0.2
         //print("Needs: \(needs); Wants: \(wants); Savings: \(savings)")
-    }
-    
-    func smartCheck(){
-        
     }
     
 }

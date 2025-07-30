@@ -12,6 +12,7 @@ struct Finances: View {
     @State private var finance: Finance? = nil
     @State private var showBreakdown = false
     @State private var titleAtTop = false
+    @State private var sCInp: String = ""
     @State private var showSmartCheckPopup = false
 
     var body: some View {
@@ -162,7 +163,6 @@ struct SmartCheckView: View {
                 TextField("Enter smart check input", text: $checkInput)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
-                
                 Button("Save") {
                     isPresented = false
                 }
