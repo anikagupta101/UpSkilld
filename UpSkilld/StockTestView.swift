@@ -4,7 +4,6 @@ struct StockListView: View {
     @State private var stockQuotes: [String: StockQuote] = [:]
     let stockService = StockService()
     
-    // Add your desired stock symbols
     let stockSymbols = ["DIS", "NFLX", "AAPL", "TSLA", "AMZN", "MSFT"]
 
     var body: some View {

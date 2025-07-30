@@ -12,7 +12,6 @@ struct Signup: View {
     @State private var errorMessage = ""
     @State private var showPassword = false
 
-
     var body: some View {
         NavigationStack {
             ZStack {
@@ -38,7 +37,8 @@ struct Signup: View {
                             TextField("Grade", text: $grade)
                             TextField("Create Username", text: $username)
                                 .autocapitalization(.none)
-                            
+                                .autocorrectionDisabled(true)
+
                             HStack {
                                 Group {
                                     if showPassword {
@@ -48,6 +48,7 @@ struct Signup: View {
                                     }
                                 }
                                 .autocapitalization(.none)
+                                .autocorrectionDisabled(true)
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
 
                                 Button(action: {
@@ -57,7 +58,6 @@ struct Signup: View {
                                         .foregroundColor(.gray)
                                 }
                             }
-
                         }
                         .textFieldStyle(RoundedBorderTextFieldStyle())
 
@@ -96,12 +96,8 @@ struct Signup: View {
     }
 
     func validateInputs() -> Bool {
-        if firstName.isEmpty ||
-            lastName.isEmpty ||
-            email.isEmpty ||
-            grade.isEmpty ||
-            username.isEmpty ||
-            password.isEmpty {
+        if firstName.isEmpty || lastName.isEmpty || email.isEmpty ||
+            grade.isEmpty || username.isEmpty || password.isEmpty {
             errorMessage = "Please fill in all fields."
             return false
         }
@@ -117,15 +113,12 @@ struct Signup: View {
             return false
         }
 
-        let uppercaseLetter = CharacterSet.uppercaseLetters
-        let digits = CharacterSet.decimalDigits
-
-        if password.rangeOfCharacter(from: uppercaseLetter) == nil {
+        if password.rangeOfCharacter(from: .uppercaseLetters) == nil {
             errorMessage = "Password must contain at least one uppercase letter."
             return false
         }
 
-        if password.rangeOfCharacter(from: digits) == nil {
+        if password.rangeOfCharacter(from: .decimalDigits) == nil {
             errorMessage = "Password must contain at least one number."
             return false
         }
@@ -140,10 +133,13 @@ struct Signup: View {
         UserDefaults.standard.set(email, forKey: "email")
         UserDefaults.standard.set(birthday, forKey: "birthday")
         UserDefaults.standard.set(grade, forKey: "grade")
-        UserDefaults.standard.set(username, forKey: "username")
-        UserDefaults.standard.set(password, forKey: "password")
+        UserDefaults.standard.set(username.trimmingCharacters(in: .whitespacesAndNewlines), forKey: "username")
+        UserDefaults.standard.set(password.trimmingCharacters(in: .whitespacesAndNewlines), forKey: "password")
+
+        print("Saved username: \(username), password: \(password)")
     }
 }
+
 
 #Preview {
     Signup()
