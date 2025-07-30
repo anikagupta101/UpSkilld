@@ -7,12 +7,6 @@
 
 import SwiftUI
 
-extension View {
-    func hideKeyboard() {
-        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-    }
-}
-
 struct Finances: View {
     @State private var incomeText: String = ""
     @State private var finance: Finance? = nil
