@@ -7,7 +7,6 @@ struct Login: View {
     @State private var goToHome = false
     @State private var showPassword = false
 
-
     var body: some View {
         NavigationStack {
             ZStack {
@@ -15,14 +14,16 @@ struct Login: View {
                     .resizable()
                     .ignoresSafeArea()
                     .allowsHitTesting(false)
+
                 VStack(spacing: 20) {
                     Text("Login")
                         .font(.largeTitle)
                         .bold()
 
                     TextField("Username", text: $enteredUsername)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
                         .autocapitalization(.none)
+                        .autocorrectionDisabled(true)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
 
                     HStack {
                         Group {
@@ -33,6 +34,7 @@ struct Login: View {
                             }
                         }
                         .autocapitalization(.none)
+                        .autocorrectionDisabled(true)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
 
                         Button(action: {
@@ -42,8 +44,6 @@ struct Login: View {
                                 .foregroundColor(.gray)
                         }
                     }
-
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
 
                     if !loginErrorMessage.isEmpty {
                         Text(loginErrorMessage)
@@ -72,15 +72,22 @@ struct Login: View {
     }
 
     func validateLogin() -> Bool {
-        let savedUsername = UserDefaults.standard.string(forKey: "username") ?? ""
-        let savedPassword = UserDefaults.standard.string(forKey: "password") ?? ""
+        let savedUsername = UserDefaults.standard.string(forKey: "username")?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let savedPassword = UserDefaults.standard.string(forKey: "password")?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let inputUsername = enteredUsername.trimmingCharacters(in: .whitespacesAndNewlines)
+        let inputPassword = enteredPassword.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        if enteredUsername.isEmpty || enteredPassword.isEmpty {
+        print("Entered username: \(inputUsername)")
+        print("Saved username: \(savedUsername)")
+        print("Entered password: \(inputPassword)")
+        print("Saved password: \(savedPassword)")
+
+        if inputUsername.isEmpty || inputPassword.isEmpty {
             loginErrorMessage = "Please enter username and password."
             return false
         }
 
-        if enteredUsername != savedUsername || enteredPassword != savedPassword {
+        if inputUsername != savedUsername || inputPassword != savedPassword {
             loginErrorMessage = "Incorrect username or password."
             return false
         }
@@ -89,6 +96,7 @@ struct Login: View {
         return true
     }
 }
+
 
 #Preview {
     Login()
