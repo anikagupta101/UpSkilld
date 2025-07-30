@@ -7,6 +7,12 @@
 
 import SwiftUI
 
+extension View {
+    func hideKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+}
+
 struct Finances: View {
     @State private var incomeText: String = ""
     @State private var finance: Finance? = nil
@@ -20,6 +26,9 @@ struct Finances: View {
                 .resizable()
                 //.scaledToFill()
                 .ignoresSafeArea()
+                .onTapGesture {
+                    hideKeyboard()
+                }
             VStack{
                 Spacer(minLength: 0)
                 Text("Finances")
@@ -48,7 +57,7 @@ struct Finances: View {
                                 titleAtTop = true
                                 showBreakdown = true
                             }
-
+                            hideKeyboard()
                         } else {
                             withAnimation{
                                 showBreakdown = false
@@ -82,6 +91,7 @@ struct Finances: View {
                 .padding()
             }
         }
+        .ignoresSafeArea(.keyboard, edges: .bottom)
     }
 }
 
