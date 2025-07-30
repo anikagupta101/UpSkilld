@@ -24,92 +24,93 @@ struct Finances: View {
         ZStack {
             Image("backgroundImage")
                 .resizable()
-                //.scaledToFill()
+            //.scaledToFill()
                 .ignoresSafeArea()
                 .onTapGesture {
                     hideKeyboard()
                 }
             VStack{
                 Spacer(minLength: 0)
-            VStack(spacing: 0){
-                //Spacer(minLength: 0)
-                Text("Finances")
-                    .font(.largeTitle)
-                    .bold()
-                    .frame(maxWidth: .infinity)
-                    .padding(.top, 20)
-                
-                    .padding(.top, titleAtTop ?  20:200)
-                    .offset(y: titleAtTop ? -50 : 0)
-                    .animation(.easeInOut(duration: 0.6), value: titleAtTop)
-                Spacer(minLength: titleAtTop ? 20 : 50)
-                VStack(spacing: 20){
-                    TextField("Enter your income", text: $incomeText)
-                        .keyboardType(.numberPad)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .padding(.horizontal)
-                        .frame(width: 410, height: 40)
+                VStack(spacing: 0){
+                    //Spacer(minLength: 0)
+                    Text("Finances")
+                        .font(.largeTitle)
+                        .bold()
+                        .frame(maxWidth: .infinity)
+                        .padding(.top, 20)
                     
-                    Button("Save") {
-                        if let income = Double(incomeText) {
-                            let newFinance = Finance(totalIncome : income)
-                            newFinance.calculations()
-                            finance = newFinance
+                        .padding(.top, titleAtTop ?  20:200)
+                        .offset(y: titleAtTop ? -50 : 0)
+                        .animation(.easeInOut(duration: 0.6), value: titleAtTop)
+                    Spacer(minLength: titleAtTop ? 20 : 50)
+                    VStack(spacing: 20){
+                        TextField("Enter your income", text: $incomeText)
+                            .keyboardType(.numberPad)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .padding(.horizontal)
+                            .frame(width: 410, height: 40)
+                        
+                        Button("Save") {
+                            if let income = Double(incomeText) {
+                                let newFinance = Finance(totalIncome : income)
+                                newFinance.calculations()
+                                finance = newFinance
+                                
+                                withAnimation{
+                                    titleAtTop = true
+                                    showBreakdown = true
+                                }
+                                hideKeyboard()
+                            } else {
+                                withAnimation{
+                                    showBreakdown = false
+                                }
+                            }
                             
-                            withAnimation{
-                                titleAtTop = true
-                                showBreakdown = true
+                        }
+                        .padding()
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                        
+                        if showBreakdown, let finance = finance {
+                            VStack{//(spacing: 12)
+                                LabelView(title: "Needs (50%)", amount: finance.needs)
+                                    .offset(x: 0, y: 30)
+                                //LabelView(title: "Wants (30%)", amount: finance.wants)
+                                LabelView(
+                                    title: "Wants (30%)",
+                                    amount: finance.wants,
+                                    btnTitle: "Smart Check",
+                                    btnAction: {
+                                        withAnimation {
+                                            showSmartCheckPopup.toggle()
+                                        }
+                                    }
+                                )
+                                .offset(x: 0, y: 30)
+                                LabelView(title: "Savings (20%)", amount: finance.savings)
+                                    .offset(x: 0, y: 30)
                             }
-                            hideKeyboard()
-                        } else {
-                            withAnimation{
-                                showBreakdown = false
-                            }
+                            .transition(.opacity.combined(with: .scale))
+                            .animation(.spring(), value: showBreakdown)
+                            .padding(.top)
+                            .font(.title2)
+                            .padding(.top)
                         }
                         
+                        Spacer()
                     }
                     .padding()
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
-                    
-                    if showBreakdown, let finance = finance {
-                        VStack{//(spacing: 12)
-                            LabelView(title: "Needs (50%)", amount: finance.needs)
-                                .offset(x: 0, y: 30)
-                            //LabelView(title: "Wants (30%)", amount: finance.wants)
-                            LabelView(
-                                title: "Wants (30%)",
-                                amount: finance.wants,
-                                btnTitle: "Smart Check",
-                                btnAction: {
-                                    withAnimation {
-                                        showSmartCheckPopup.toggle()
-                                    }
-                                }
-                            )
-                                .offset(x: 0, y: 30)
-                            LabelView(title: "Savings (20%)", amount: finance.savings)
-                                .offset(x: 0, y: 30)
-                        }
-                        .transition(.opacity.combined(with: .scale))
-                        .animation(.spring(), value: showBreakdown)
-                        .padding(.top)
-                        .font(.title2)
-                        .padding(.top)
-                    }
-                    
-                    Spacer()
                 }
-                .padding()
             }
+            .sheet(isPresented: $showSmartCheckPopup) {
+                SmartCheckView(isPresented: $showSmartCheckPopup)
+                    .presentationDetents([.medium])
+                    .ignoresSafeArea()
+            }
+            .ignoresSafeArea(.keyboard, edges: .bottom)
         }
-        .sheet(isPresented: $showSmartCheckPopup) {
-            SmartCheckView(isPresented: $showSmartCheckPopup)
-                .presentationDetents([.medium])
-                .ignoresSafeArea()
-        }
-        .ignoresSafeArea(.keyboard, edges: .bottom)
     }
 }
 
