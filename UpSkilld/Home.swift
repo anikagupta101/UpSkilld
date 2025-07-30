@@ -17,13 +17,34 @@ struct Home: View {
                     .ignoresSafeArea()
                     .allowsHitTesting(false)
                 VStack {
+                    Text("UpSkilld")
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                        .padding(.trailing)
+                    .toolbar {
+                        NavigationLink("Finances", destination: Finances())
+                            .fontWeight(.bold)
+                            .padding()
+                            
+                        NavigationLink("Invest", destination: Invest())
+                            .fontWeight(.bold)
+                            .padding()
+                        NavigationLink("Ups", destination: ShortFormContent())
+                            .fontWeight(.bold)
+                            .padding(.trailing, 70.0)
+                            
+                            
+                    }
+                    
+                    .multilineTextAlignment(.center)
+                    
                     Text("Home Screen")
                         .font(.largeTitle)
+                        .fontWeight(.bold)
                     
-                    NavigationLink("Finances", destination: Finances())
-                    NavigationLink("Invest", destination: Invest())
-                    NavigationLink("Short Form Content", destination: ShortFormContent())
+                    
                 }
+             
                 .padding()
             }
         }
