@@ -10,6 +10,8 @@ struct Signup: View {
     @State private var password = ""
     @State private var goToLogin = false
     @State private var errorMessage = ""
+    @State private var showPassword = false
+
 
     var body: some View {
         NavigationStack {
@@ -36,7 +38,26 @@ struct Signup: View {
                             TextField("Grade", text: $grade)
                             TextField("Create Username", text: $username)
                                 .autocapitalization(.none)
-                            SecureField("Create Password", text: $password)
+                            
+                            HStack {
+                                Group {
+                                    if showPassword {
+                                        TextField("Create Password", text: $password)
+                                    } else {
+                                        SecureField("Create Password", text: $password)
+                                    }
+                                }
+                                .autocapitalization(.none)
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+
+                                Button(action: {
+                                    showPassword.toggle()
+                                }) {
+                                    Image(systemName: showPassword ? "eye.slash" : "eye")
+                                        .foregroundColor(.gray)
+                                }
+                            }
+
                         }
                         .textFieldStyle(RoundedBorderTextFieldStyle())
 
