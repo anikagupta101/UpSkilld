@@ -9,6 +9,7 @@ struct Signup: View {
     @State private var username = ""
     @State private var password = ""
     @State private var goToLogin = false
+    @State private var errorMessage = ""
 
     var body: some View {
         NavigationStack {
@@ -34,16 +35,26 @@ struct Signup: View {
                                 .foregroundColor(.black)
                             TextField("Grade", text: $grade)
                             TextField("Create Username", text: $username)
+                                .autocapitalization(.none)
                             SecureField("Create Password", text: $password)
                         }
                         .textFieldStyle(RoundedBorderTextFieldStyle())
+
+                        if !errorMessage.isEmpty {
+                            Text(errorMessage)
+                                .foregroundColor(.red)
+                                .font(.caption)
+                        }
 
                         NavigationLink(destination: Login(), isActive: $goToLogin) {
                             EmptyView()
                         }
 
                         Button(action: {
-                            goToLogin = true
+                            if validateInputs() {
+                                saveUserData()
+                                goToLogin = true
+                            }
                         }) {
                             Text("Sign Up")
                                 .frame(maxWidth: .infinity)
@@ -61,6 +72,55 @@ struct Signup: View {
             }
             .navigationTitle("Sign Up")
         }
+    }
+
+    func validateInputs() -> Bool {
+        if firstName.isEmpty ||
+            lastName.isEmpty ||
+            email.isEmpty ||
+            grade.isEmpty ||
+            username.isEmpty ||
+            password.isEmpty {
+            errorMessage = "Please fill in all fields."
+            return false
+        }
+
+        let calendar = Calendar.current
+        let now = Date()
+        guard let age = calendar.dateComponents([.year], from: birthday, to: now).year else {
+            errorMessage = "Invalid birthday."
+            return false
+        }
+        if age < 13 || age > 18 {
+            errorMessage = "You must be between 13 and 18 years old."
+            return false
+        }
+
+        let uppercaseLetter = CharacterSet.uppercaseLetters
+        let digits = CharacterSet.decimalDigits
+
+        if password.rangeOfCharacter(from: uppercaseLetter) == nil {
+            errorMessage = "Password must contain at least one uppercase letter."
+            return false
+        }
+
+        if password.rangeOfCharacter(from: digits) == nil {
+            errorMessage = "Password must contain at least one number."
+            return false
+        }
+
+        errorMessage = ""
+        return true
+    }
+
+    func saveUserData() {
+        UserDefaults.standard.set(firstName, forKey: "firstName")
+        UserDefaults.standard.set(lastName, forKey: "lastName")
+        UserDefaults.standard.set(email, forKey: "email")
+        UserDefaults.standard.set(birthday, forKey: "birthday")
+        UserDefaults.standard.set(grade, forKey: "grade")
+        UserDefaults.standard.set(username, forKey: "username")
+        UserDefaults.standard.set(password, forKey: "password")
     }
 }
 
