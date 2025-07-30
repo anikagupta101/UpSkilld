@@ -14,7 +14,11 @@ struct Login: View {
                     .resizable()
                     .ignoresSafeArea()
                     .allowsHitTesting(false)
-
+                
+                    .onTapGesture {
+                        hideKeyboard()
+                    }
+                
                 VStack(spacing: 20) {
                     Text("Login")
                         .font(.largeTitle)
@@ -55,6 +59,7 @@ struct Login: View {
                         if validateLogin() {
                             goToHome = true
                         }
+                        hideKeyboard()
                     }
                     .frame(maxWidth: .infinity)
                     .padding()
@@ -65,6 +70,7 @@ struct Login: View {
                     //BEG OF TEST CODE
                     Button("BYPASS LOGIN") {
                         goToHome = true
+                        hideKeyboard()
                     }
                     .frame(maxWidth: .infinity)
                     .padding()
@@ -79,6 +85,7 @@ struct Login: View {
                 }
                 .padding()
             }
+            .ignoresSafeArea(.keyboard, edges: .bottom)
         }
     }
 
