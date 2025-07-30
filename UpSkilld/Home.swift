@@ -22,6 +22,7 @@ struct Home: View {
                     
                     NavigationLink("Finances", destination: Finances())
                     NavigationLink("Invest", destination: Invest())
+                    NavigationLink("Short Form Content", destination: ShortFormContent())
                 }
                 .padding()
             }
