@@ -61,7 +61,18 @@ struct Login: View {
                     .background(Color.blue)
                     .foregroundColor(.white)
                     .cornerRadius(12)
-
+                    
+                    //BEG OF TEST CODE
+                    Button("BYPASS LOGIN") {
+                        goToHome = true
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.purple)
+                    .foregroundColor(.white)
+                    .cornerRadius(12)
+                    //END OF TEST CODE
+                    
                     NavigationLink(destination: Home(), isActive: $goToHome) {
                         EmptyView()
                     }
