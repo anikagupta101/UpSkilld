@@ -5,6 +5,8 @@ struct Login: View {
     @State private var enteredPassword = ""
     @State private var loginErrorMessage = ""
     @State private var goToHome = false
+    @State private var showPassword = false
+
 
     var body: some View {
         NavigationStack {
@@ -22,7 +24,25 @@ struct Login: View {
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .autocapitalization(.none)
 
-                    SecureField("Password", text: $enteredPassword)
+                    HStack {
+                        Group {
+                            if showPassword {
+                                TextField("Password", text: $enteredPassword)
+                            } else {
+                                SecureField("Password", text: $enteredPassword)
+                            }
+                        }
+                        .autocapitalization(.none)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+
+                        Button(action: {
+                            showPassword.toggle()
+                        }) {
+                            Image(systemName: showPassword ? "eye.slash" : "eye")
+                                .foregroundColor(.gray)
+                        }
+                    }
+
                         .textFieldStyle(RoundedBorderTextFieldStyle())
 
                     if !loginErrorMessage.isEmpty {
