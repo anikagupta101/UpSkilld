@@ -31,7 +31,7 @@ struct Invest: View {
                 Text("Actionable Tip: As a teen, time is your biggest advantage! Start with even $10 a week. If you consistently invest just $10 a week ($520 a year) from age 15 until age 65, with a conservative average 7% annual return, you could have over $250,000! You’d only have saved $26,000 of your own money over those 50 years, which shows the incredible power of compounding!")
                     .padding()
                 
-                NavigationLink(destination: Tips()) {
+                NavigationLink(destination: Quiz()) {
                     Text("Beginner tips button")
                         .font(.title)
                         .fontWeight(.semibold)

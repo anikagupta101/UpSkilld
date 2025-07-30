@@ -13,7 +13,7 @@ struct Home: View {
             ZStack {
                 Image("backgroundImage")
                     .resizable()
-                    .scaledToFill()
+                    //.scaledToFill()
                     .ignoresSafeArea()
                     .allowsHitTesting(false)
                 VStack {

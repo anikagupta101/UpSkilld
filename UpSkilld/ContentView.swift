@@ -7,7 +7,7 @@ struct ContentView: View {
             ZStack {
                 Image("backgroundImage")
                     .resizable()
-                    .scaledToFill()
+                    //.scaledToFill()
                     .ignoresSafeArea()
                     .allowsHitTesting(false)
                 VStack(spacing: 40) {

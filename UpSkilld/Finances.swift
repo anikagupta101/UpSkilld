@@ -17,7 +17,7 @@ struct Finances: View {
         ZStack {
             Image("backgroundImage")
                 .resizable()
-                .scaledToFill()
+                //.scaledToFill()
                 .ignoresSafeArea()
                 .allowsHitTesting(false)
             VStack(spacing: 20) {

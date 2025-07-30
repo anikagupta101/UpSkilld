@@ -15,35 +15,40 @@ struct Tutorials: View {
                 .resizable()
                 .ignoresSafeArea()
                 .allowsHitTesting(false)
-            VStack {
+            
+            VStack(spacing: 10) {
                 Text("Mark Tilbury: How to Invest for Teenagers")
-                    .padding()
+                    //.padding()
                 YouTubePlayerView(videoID: "-C_5hzJCHaY")
-                    .cornerRadius(12)
-                    .shadow(radius: 5)
-                    .frame(width: 300, height: 200)
-                    .offset(x:0, y: -10)
+                .frame(width: 350, height: 200)
+                //.frame(width: 300, height: 200)
+                .cornerRadius(12)
+                .shadow(radius: 5)
+                //.padding()
                 
                 Text("Financial Literacy - Full Video")
                     //.padding()
                 YouTubePlayerView(videoID: "4j2emMn7UaI")
-                    .frame(height: 250)
+                    .frame(width: 350, height: 200)
                     .cornerRadius(12)
                     .shadow(radius: 5)
                     //.padding()
                 
                 Text("Financial Literacy In 63 Minutes")
+                .padding(.bottom, -10)
                 Text("summary of Khan Academy's 30 hour financial literacy course")
+                    //.offset(x:0, y: -10)
+                    .font(.caption)
                     //.padding()
                 YouTubePlayerView(videoID: "ouvbeb2wSGA")
-                    .frame(height: 250)
+                    .frame(width: 350, height: 200)
                     .cornerRadius(12)
                     .shadow(radius: 5)
                     //.padding()
-            }
-        }
-    }
-}
+            } //closes VStack
+        } //closes ZStack
+    } //closes var body
+} //closes struct
 
 
 struct YouTubePlayerView: UIViewRepresentable {
