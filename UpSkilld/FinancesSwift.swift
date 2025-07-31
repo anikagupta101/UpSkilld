@@ -43,7 +43,7 @@ class Finance{
             } else if smartCheck >= (0.31 * wants) && smartCheck <= (0.6*wants){
                         str = "This takes up a good chunk. Is it worth it or do you want to save it for future use?"
             } else if smartCheck >= (0.61 * wants) && smartCheck <= (0.85 * wants){
-                str = "This is more you your fun money. Treat yourself, or wait for something bigger?"
+                str = "This is most of your fun money. Treat yourself, or wait for something bigger?"
             } else{
                 str = "This maxes out your \"wants\" budget. It's doable, but are you ok with zero wiggle room?"
             }

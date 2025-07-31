@@ -114,6 +114,11 @@ struct Finances: View {
                     .presentationDetents([.medium])
                     .ignoresSafeArea()
             }
+            .onChange(of: showSmartCheckPopup) { newValue in
+                if !newValue {
+                    smartCheckMessage = ""
+                }
+            }
             .ignoresSafeArea(.keyboard, edges: .bottom)
         }
     }
