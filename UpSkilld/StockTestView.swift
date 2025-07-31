@@ -1,6 +1,15 @@
 import SwiftUI
 
+struct Investment: Identifiable {
+    let id = UUID()
+    let symbol: String
+    let amount: Double
+    let shares: Double
+    let date: Date
+}
+
 struct StockListView: View {
+    @State private var investmentHistory: [Investment] = []
     @State private var stockQuotes: [String: StockQuote] = [:]
     @State private var selectedSymbol: String?
     @State private var selectedQuote: StockQuote?
@@ -9,41 +18,52 @@ struct StockListView: View {
     @State private var sharesPurchased: Double?
 
     let stockService = StockService()
-    let stockSymbols = ["DIS", "NFLX", "AAPL", "TSLA", "AMZN", "MSFT"]
+    let stockSymbols = ["DIS", "NFLX", "AAPL", "TSLA", "AMZN", "MSFT", "GOOG", "META", "NVDA", "BABA", "INTC", "CSCO", "ADBE"]
 
     var body: some View {
         NavigationStack {
             List {
-                ForEach(stockSymbols, id: \.self) { symbol in
-                    if let quote = stockQuotes[symbol] {
-                        HStack {
-                            VStack(alignment: .leading) {
-                                Text(symbol)
-                                    .font(.headline)
-                                Text("$\(quote.c, specifier: "%.2f")")
-                                    .foregroundColor(.gray)
-                            }
-                            Spacer()
-                            VStack(alignment: .trailing) {
-                                Text(quote.dp ?? 0 >= 0 ? "+\(quote.dp!, specifier: "%.2f")%" : "\(quote.dp!, specifier: "%.2f")%")
-                                    .foregroundColor((quote.dp ?? 0) >= 0 ? .green : .red)
-                                
-                                Button("Invest") {
-                                    selectedSymbol = symbol
-                                    selectedQuote = quote
-                                    showInvestSheet = true
-                                    investAmount = ""
-                                    sharesPurchased = nil
+                Section {
+                    NavigationLink("Track Investments") {
+                        InvestmentHistoryScreen(investments: investmentHistory)
+                    }
+                    .font(.headline)
+                    .padding(.vertical, 8)
+                }
+
+                Section {
+                    ForEach(stockSymbols, id: \.self) { symbol in
+                        if let quote = stockQuotes[symbol] {
+                            HStack {
+                                VStack(alignment: .leading) {
+                                    Text(symbol)
+                                        .font(.headline)
+                                    Text("$\(quote.c, specifier: "%.2f")")
+                                        .foregroundColor(.gray)
                                 }
-                                .font(.caption)
-                                .buttonStyle(.borderedProminent)
+                                Spacer()
+                                VStack(alignment: .trailing) {
+                                    Text(quote.dp ?? 0 >= 0 ? "+\(quote.dp!, specifier: "%.2f")%" : "\(quote.dp!, specifier: "%.2f")%")
+                                        .foregroundColor((quote.dp ?? 0) >= 0 ? .green : .red)
+
+                                    Button("Invest") {
+                                        showInvestSheet = true
+                                        selectedSymbol = symbol
+                                        selectedQuote = quote
+                                        investAmount = ""
+                                        sharesPurchased = nil
+                                    }
+                                    .font(.caption)
+                                    .buttonStyle(.borderedProminent)
+                                }
                             }
+                        } else {
+                            Text("Loading \(symbol)...")
                         }
-                    } else {
-                        Text("Loading \(symbol)...")
                     }
                 }
             }
+            .listStyle(.insetGrouped)
             .navigationTitle("Explore Stocks")
             .onAppear {
                 fetchAllStocks()
@@ -54,7 +74,7 @@ struct StockListView: View {
                         Text("Invest in \(symbol)")
                             .font(.title)
                             .bold()
-                        
+
                         Text("Current Price: $\(quote.c, specifier: "%.2f")")
 
                         TextField("Amount to invest ($)", text: $investAmount)
@@ -71,7 +91,11 @@ struct StockListView: View {
 
                         Button("Confirm Purchase") {
                             if let amount = Double(investAmount), amount > 0 {
-                                sharesPurchased = amount / quote.c
+                                let shares = amount / quote.c
+                                sharesPurchased = shares
+
+                                let newInvestment = Investment(symbol: symbol, amount: amount, shares: shares, date: Date())
+                                investmentHistory.append(newInvestment)
                             }
                         }
                         .buttonStyle(.borderedProminent)
@@ -103,7 +127,25 @@ struct StockListView: View {
     }
 }
 
+struct InvestmentHistoryScreen: View {
+    let investments: [Investment]
 
+    var body: some View {
+        List(investments) { investment in
+            VStack(alignment: .leading, spacing: 4) {
+                Text(investment.symbol)
+                    .font(.headline)
+                Text("Invested: $\(investment.amount, specifier: "%.2f")")
+                Text("Shares: \(investment.shares, specifier: "%.4f")")
+                Text("Date: \(investment.date.formatted(date: .abbreviated, time: .shortened))")
+                    .font(.caption)
+                    .foregroundColor(.gray)
+            }
+            .padding(.vertical, 4)
+        }
+        .navigationTitle("Your Investments")
+    }
+}
 
 #Preview {
     StockListView()
