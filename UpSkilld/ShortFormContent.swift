@@ -2,17 +2,16 @@ import SwiftUI
 import AVKit
 import WebKit
 import PhotosUI
-import MobileCoreServices // Import for UTType.movie
+import MobileCoreServices
 
-// MARK: - Model
 struct ShortVideo2: Identifiable {
     let id = UUID()
     let title: String
     let username: String
-    let videoURL: URL? // For local/remote AVPlayer content
-    let youtubeID: String? // For YouTube embedded content
+    let videoURL: URL?
+    let youtubeID: String?
     
-    // Initializer for local/remote video URLs
+    
     init(title: String, username: String, videoURL: URL?) {
         self.title = title
         self.username = username
@@ -20,7 +19,7 @@ struct ShortVideo2: Identifiable {
         self.youtubeID = nil
     }
     
-    // Initializer for YouTube videos
+    
     init(title: String, username: String, youtubeID: String?) {
         self.title = title
         self.username = username
@@ -29,21 +28,20 @@ struct ShortVideo2: Identifiable {
     }
 }
 
-// MARK: - YouTube Player View (WebView)
 struct YouTubePlayerView2: UIViewRepresentable {
     let videoID: String
     @Binding var isPlaying: Bool
 
     func makeUIView(context: Context) -> WKWebView {
-        // Create a configuration that allows media to autoplay
+        
         let configuration = WKWebViewConfiguration()
         configuration.allowsInlineMediaPlayback = true
-        // This is crucial for enabling autoplay without user interaction
+        
         configuration.mediaTypesRequiringUserActionForPlayback = []
 
         let webView = WKWebView(frame: .zero, configuration: configuration)
         webView.scrollView.isScrollEnabled = false
-        // Hides the white background flash before the video loads
+       
         webView.isOpaque = false
         webView.backgroundColor = .clear
         return webView
@@ -53,25 +51,22 @@ struct YouTubePlayerView2: UIViewRepresentable {
         if isPlaying {
             let embedURLString = "https://www.youtube.com/embed/\(videoID)?playsinline=1&autoplay=1"
 
-            // safely check the current URL.
-            // First, we check if the current URL string contains our video ID.
-            // The '?? false' means "if the URL is nil, treat it as false".
+           
             let isAlreadyLoaded = uiView.url?.absoluteString.contains(videoID) ?? false
 
-            // Only load the new URL if the correct video isn't already loaded.
+            
             if !isAlreadyLoaded {
                 if let url = URL(string: embedURLString) {
                     uiView.load(URLRequest(url: url))
                 }
             }
         } else {
-            // This part remains the same.
+            
             uiView.loadHTMLString("", baseURL: nil)
         }
     }
 }
 
-// MARK: - Video Slide View
 struct VideoSlideView: View {
     let video: ShortVideo2
     @State private var player: AVPlayer?
@@ -79,7 +74,7 @@ struct VideoSlideView: View {
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
-            // We use a placeholder for the player view
+           
             if let youtubeID = video.youtubeID {
                 YouTubePlayerView2(videoID: youtubeID, isPlaying: $isVisible)
             } else if let player = player {
@@ -88,11 +83,11 @@ struct VideoSlideView: View {
                     .scaledToFill()
                     .ignoresSafeArea()
             } else {
-                // Show a black background while the player is being prepared
+               
                 Rectangle().fill(Color.black)
             }
 
-            // Your overlay UI remains unchanged
+            
             VStack(alignment: .leading, spacing: 8) {
                 Spacer()
                 Text(video.title).font(.title2).bold().foregroundColor(.white).lineLimit(2)
@@ -105,23 +100,22 @@ struct VideoSlideView: View {
             .padding([.leading, .bottom], 20)
             .padding(.trailing, 10)
         }
-        // CORRECTED LOGIC: This is the most important change.
+        
         .onChange(of: isVisible) {
             if isVisible {
-                // When the view becomes visible, create a new player instance and play it.
+                
                 guard let url = video.videoURL else { return }
                 player = AVPlayer(url: url)
-                player?.isMuted = true // Autoplay must be muted
+                player?.isMuted = true
                 player?.play()
 
-                // Set up an observer to loop the video when it ends.
+                
                 NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: player?.currentItem, queue: .main) { _ in
                     player?.seek(to: .zero)
                     player?.play()
                 }
             } else {
-                // When the view is no longer visible, pause and destroy the player
-                // to release memory and network resources.
+               
                 player?.pause()
                 player = nil
             }
@@ -129,10 +123,10 @@ struct VideoSlideView: View {
     }
 }
 
-// MARK: - Feed View (No changes needed here)
+
 struct FeedView2: View {
     @Binding var videos: [ShortVideo2]
-    @State private var currentVideoID: UUID? //added
+    @State private var currentVideoID: UUID?
     
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
@@ -144,28 +138,27 @@ struct FeedView2: View {
                         .id(video.id)
                 }
             }
-            .scrollTargetLayout() //added
+            .scrollTargetLayout()
         }
         .onAppear {
             currentVideoID = videos.first?.id
         }
         .scrollTargetBehavior(.paging)
         .ignoresSafeArea()
-        .scrollPosition(id: $currentVideoID) //added
+        .scrollPosition(id: $currentVideoID) 
     }
 }
 
 
-// MARK: - Post Video View
 struct PostVideoView: View {
     @Environment(\.dismiss) var dismiss
     @Binding var videos: [ShortVideo2]
     
     @State private var videoTitle: String = ""
     @State private var username: String = ""
-    @State private var videoInput: String = "" // For URL input
-    @State private var selectedItem: PhotosPickerItem? = nil // For local video selection
-    @State private var localVideoURL: URL? = nil // To store the temporary URL of the picked video
+    @State private var videoInput: String = ""
+    @State private var selectedItem: PhotosPickerItem? = nil
+    @State private var localVideoURL: URL? = nil
     @State private var showingAlert = false
     @State private var alertMessage = ""
     
@@ -187,15 +180,14 @@ struct PostVideoView: View {
                     }
                     .onChange(of: selectedItem) { newItem in
                         Task {
-                            localVideoURL = nil // Reset previous local video URL
+                            localVideoURL = nil
                             if let item = newItem {
                                 do {
-                                    // Load the video as a URL, which is more efficient for large files
+                                    
                                     if let url = try await item.loadTransferable(type: URL.self) {
-                                        // The URL returned by PhotosPicker is often a temporary file URL.
-                                        // For persistence, you'd copy this to a permanent location in your app's sandbox.
+                                        
                                         localVideoURL = url
-                                        videoInput = url.absoluteString // Update videoInput field for user to see
+                                        videoInput = url.absoluteString
                                         alertMessage = "Local video selected. Tap Save."
                                     } else {
                                         alertMessage = "Could not load video URL from Photos Picker."
@@ -245,22 +237,22 @@ struct PostVideoView: View {
             return
         }
         
-        // Prioritize local video if selected via PhotosPicker
+        
         if let url = localVideoURL {
             videos.insert(ShortVideo2(title: videoTitle, username: username, videoURL: url), at: 0)
             alertMessage = "Local video added successfully!"
             dismiss()
-            return // Exit after handling local video
+            return
         }
         
-        // If no local video, try to parse the URL string
+        
         if let url = URL(string: videoInput), url.scheme != nil {
             if let youtubeID = extractYouTubeID(from: url) {
                 videos.insert(ShortVideo2(title: videoTitle, username: username, youtubeID: youtubeID), at: 0)
                 alertMessage = "YouTube video added successfully!"
                 dismiss()
             } else if url.absoluteString.lowercased().hasSuffix(".mp4") || url.absoluteString.lowercased().hasSuffix(".mov") {
-                // Assume it's a direct video URL (MP4, MOV, etc.) if it has the correct extension
+                
                 videos.insert(ShortVideo2(title: videoTitle, username: username, videoURL: url), at: 0)
                 alertMessage = "Direct video URL added successfully!"
                 dismiss()
@@ -285,7 +277,7 @@ struct PostVideoView: View {
             }
         }
         
-        // Pattern 2: Shortened youtu.be URL (youtube.com)
+        
         if let regex = try? NSRegularExpression(pattern: "youtu\\.be/([a-zA-Z0-9_-]+)", options: []),
            let match = regex.firstMatch(in: urlString, options: [], range: NSRange(location: 0, length: urlString.utf16.count)) {
             if let idRange = Range(match.range(at: 1), in: urlString) {
@@ -293,7 +285,7 @@ struct PostVideoView: View {
             }
         }
         
-        // Pattern 3: Embedded URL (youtu.be)
+      
         if let regex = try? NSRegularExpression(pattern: "embed/([a-zA-Z0-9_-]+)", options: []),
            let match = regex.firstMatch(in: urlString, options: [], range: NSRange(location: 0, length: urlString.utf16.count)) {
             if let idRange = Range(match.range(at: 1), in: urlString) {
@@ -301,7 +293,7 @@ struct PostVideoView: View {
             }
         }
         
-        // Pattern 4: Shorts URL (youtu.be/)
+        
         if let regex = try? NSRegularExpression(pattern: "/shorts/([a-zA-Z0-9_-]+)", options: []),
            let match = regex.firstMatch(in: urlString, options: [], range: NSRange(location: 0, length: urlString.utf16.count)) {
             if let idRange = Range(match.range(at: 1), in: urlString) {
@@ -309,7 +301,7 @@ struct PostVideoView: View {
             }
         }
         
-        // Consider if the URL itself is just the ID (less common but possible)
+        
         if urlString.range(of: "^[a-zA-Z0-9_-]{11}$", options: .regularExpression) != nil {
             return urlString
         }
@@ -318,7 +310,7 @@ struct PostVideoView: View {
     }
 }
 
-// MARK: - Main ShortFormContent View (No changes needed here)
+
 struct ShortFormContent: View {
     @State private var sampleVideos: [ShortVideo2] = [
         ShortVideo2(title: "Finance", username: "finance!", youtubeID: "lWu2fw6APM4"),
@@ -353,7 +345,6 @@ struct ShortFormContent: View {
     }
 }
 
-// MARK: - Preview (No changes needed here)
 #Preview {
     ShortFormContent()
 }
