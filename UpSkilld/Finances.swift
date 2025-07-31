@@ -12,8 +12,8 @@ struct Finances: View {
     @State private var finance: Finance? = nil
     @State private var showBreakdown = false
     @State private var titleAtTop = false
-    @State private var sCInp: String = ""
     @State private var showSmartCheckPopup = false
+    @State private var smartCheckMessage = ""
 
     var body: some View {
         ZStack {
@@ -84,6 +84,7 @@ struct Finances: View {
                                     }
                                 )
                                 .offset(x: 0, y: 30)
+                                
                                 LabelView(title: "Savings (20%)", amount: finance.savings)
                                     .offset(x: 0, y: 30)
                             }
@@ -100,7 +101,16 @@ struct Finances: View {
                 }
             }
             .sheet(isPresented: $showSmartCheckPopup) {
-                SmartCheckView(isPresented: $showSmartCheckPopup)
+                //let currentFinance = finance
+                SmartCheckView(
+                    isPresented: $showSmartCheckPopup,
+                    smartCheckMessage: $smartCheckMessage, onSave: { val in
+                        if let currentFinance = finance {
+                            currentFinance.smartCheck(sc: val, bool: true)
+                            smartCheckMessage = currentFinance.str // <-- Set the message
+                        }
+                    }
+                )
                     .presentationDetents([.medium])
                     .ignoresSafeArea()
             }
@@ -147,12 +157,13 @@ struct LabelView: View{
 struct SmartCheckView: View {
     @Binding var isPresented: Bool
     @State private var checkInput: String = ""
+    @Binding var smartCheckMessage: String
+    var onSave: (Double) -> Void
     
     var body: some View {
         ZStack{
             Image("backgroundImage")
                 .resizable()
-            //.scaledToFill()
                 .clipped()
                 .cornerRadius(20)
             VStack(spacing: 20) {
@@ -164,12 +175,24 @@ struct SmartCheckView: View {
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
                 Button("Save") {
-                    isPresented = false
+                    if let smartVal = Double(checkInput) {
+                        onSave(smartVal)
+                        //isPresented = true
+                        //Text(finance.str)
+                    }
+                        
                 }
                 .padding()
                 .background(Color.blue)
                 .foregroundColor(.white)
                 .cornerRadius(10)
+                
+                if !smartCheckMessage.isEmpty {
+                    Text(smartCheckMessage)
+                        .font(.title)
+                        .foregroundColor(.black)
+                        .padding(.top, 10)
+                }
                 
                 Spacer()
             }
