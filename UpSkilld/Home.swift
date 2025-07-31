@@ -33,13 +33,13 @@ struct Home: View {
                         NavigationLink(destination: Finances()) {
                             HomeButton(title: "Finances", background: Color("NewGreen").opacity(0.5), textColor: .white)
                                 .frame(width: 190)
-                                .offset(y:-50)
+                                .offset(y:-30)
                         }
 
                         NavigationLink(destination: Invest()) {
                             HomeButton(title: "Invest", background: Color("NewGreen").opacity(0.5), textColor: .white)
                                 .frame(width: 190)
-                                .offset(y:-40)
+                                .offset(y:-30)
                         }
 
                         NavigationLink(destination: ShortFormContent()) {
@@ -51,7 +51,7 @@ struct Home: View {
                         NavigationLink(destination: StockListView()) {
                             HomeButton(title: "Explore Stocks", background: Color("NewGreen").opacity(0.5), textColor: .white)
                                 .frame(width: 190)
-                                .offset(y:-18)
+                                .offset(y:-30)
                         }
                     }
                     .padding(.top, 40)
