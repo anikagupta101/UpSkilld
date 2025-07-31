@@ -18,9 +18,6 @@ struct Signup: View {
                 Image("backgroundImage")
                     .resizable()
                     .ignoresSafeArea()
-                    .onTapGesture {
-                        hideKeyboard()
-                    }
 
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {
@@ -92,7 +89,11 @@ struct Signup: View {
                     .padding()
                 }
             }
-            .ignoresSafeArea(.keyboard, edges: .bottom) //might not work?
+            .contentShape(Rectangle())
+            .onTapGesture {
+                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+            }
+            .ignoresSafeArea(.keyboard, edges: .bottom)
         }
     }
 
@@ -135,11 +136,7 @@ struct Signup: View {
 
         UserDefaults.standard.set(trimmedUsername, forKey: "username")
         UserDefaults.standard.set(trimmedPassword, forKey: "password")
-        UserDefaults.standard.set(trimmedFirstName, forKey: "firstName") // ✅ Add this
-
-        print("Saved username: \(trimmedUsername)")
-        print("Saved password: \(trimmedPassword)")
-        print("Saved first name: \(trimmedFirstName)")
+        UserDefaults.standard.set(trimmedFirstName, forKey: "firstName")
     }
 }
 
