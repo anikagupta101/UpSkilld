@@ -25,7 +25,7 @@ struct StockListView: View {
             List {
                 Section {
                     NavigationLink("Track Investments") {
-                        InvestmentHistoryScreen(investments: investmentHistory)
+                        InvestmentHistoryScreen(investments: investmentHistory, stockQuotes: stockQuotes)
                     }
                     .font(.headline)
                     .padding(.vertical, 8)
@@ -129,6 +129,7 @@ struct StockListView: View {
 
 struct InvestmentHistoryScreen: View {
     let investments: [Investment]
+    let stockQuotes: [String: StockQuote]  // Add this parameter
 
     var body: some View {
         List(investments) { investment in
@@ -140,12 +141,27 @@ struct InvestmentHistoryScreen: View {
                 Text("Date: \(investment.date.formatted(date: .abbreviated, time: .shortened))")
                     .font(.caption)
                     .foregroundColor(.gray)
+
+                if let currentPrice = stockQuotes[investment.symbol]?.c {
+                    let buyPrice = investment.amount / investment.shares
+                    let profitLoss = (currentPrice - buyPrice) * investment.shares
+                    let profitLossColor = profitLoss >= 0 ? Color.green : Color.red
+
+                    Text("P/L: \(profitLoss >= 0 ? "+" : "")$\(profitLoss, specifier: "%.2f")")
+                        .foregroundColor(profitLossColor)
+                        .bold()
+                } else {
+                    Text("Current price unavailable")
+                        .foregroundColor(.gray)
+                        .italic()
+                }
             }
             .padding(.vertical, 4)
         }
         .navigationTitle("Your Investments")
     }
 }
+
 
 #Preview {
     StockListView()
