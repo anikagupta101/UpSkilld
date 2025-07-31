@@ -4,7 +4,7 @@ import WebKit
 import PhotosUI
 import MobileCoreServices // Import for UTType.movie
 
-// MARK: - Model (No changes needed here)
+// MARK: - Model
 struct ShortVideo2: Identifiable {
     let id = UUID()
     let title: String
@@ -29,74 +29,70 @@ struct ShortVideo2: Identifiable {
     }
 }
 
-// MARK: - YouTube Player View (WebView) (No changes needed here)
+// MARK: - YouTube Player View (WebView)
 struct YouTubePlayerView2: UIViewRepresentable {
     let videoID: String
-    
+    @Binding var isPlaying: Bool
+
     func makeUIView(context: Context) -> WKWebView {
-        let webView = WKWebView()
+        // Create a configuration that allows media to autoplay
+        let configuration = WKWebViewConfiguration()
+        configuration.allowsInlineMediaPlayback = true
+        // This is crucial for enabling autoplay without user interaction
+        configuration.mediaTypesRequiringUserActionForPlayback = []
+
+        let webView = WKWebView(frame: .zero, configuration: configuration)
         webView.scrollView.isScrollEnabled = false
-        webView.navigationDelegate = context.coordinator
-        webView.configuration.allowsInlineMediaPlayback = true
-        let preferences = WKPreferences()
-        preferences.javaScriptCanOpenWindowsAutomatically = true
-        webView.configuration.preferences = preferences
+        // Hides the white background flash before the video loads
+        webView.isOpaque = false
+        webView.backgroundColor = .clear
         return webView
     }
-    
+
     func updateUIView(_ uiView: WKWebView, context: Context) {
-        let embedURLString = "https://www.youtube.com/embed/\(videoID)?playsinline=1&autoplay=1&controls=0&showinfo=0&loop=1&playlist=\(videoID)&modestbranding=1"
-        if let url = URL(string: embedURLString) {
-            uiView.load(URLRequest(url: url))
-        }
-    }
-    
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-    
-    class Coordinator: NSObject, WKNavigationDelegate {
-        var parent: YouTubePlayerView2
-        init(_ parent: YouTubePlayerView2) { self.parent = parent }
-        func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-            if navigationAction.navigationType == .linkActivated {
-                decisionHandler(.cancel)
-            } else {
-                decisionHandler(.allow)
+        if isPlaying {
+            let embedURLString = "https://www.youtube.com/embed/\(videoID)?playsinline=1&autoplay=1"
+
+            // safely check the current URL.
+            // First, we check if the current URL string contains our video ID.
+            // The '?? false' means "if the URL is nil, treat it as false".
+            let isAlreadyLoaded = uiView.url?.absoluteString.contains(videoID) ?? false
+
+            // Only load the new URL if the correct video isn't already loaded.
+            if !isAlreadyLoaded {
+                if let url = URL(string: embedURLString) {
+                    uiView.load(URLRequest(url: url))
+                }
             }
+        } else {
+            // This part remains the same.
+            uiView.loadHTMLString("", baseURL: nil)
         }
     }
 }
 
-// MARK: - Video Slide View (No changes needed here)
+// MARK: - Video Slide View
 struct VideoSlideView: View {
     let video: ShortVideo2
     @State private var player: AVPlayer?
-    @State private var isPlaying: Bool = false
-    
+    @Binding var isVisible: Bool
+
     var body: some View {
         ZStack(alignment: .bottomLeading) {
-            if let url = video.videoURL {
+            // We use a placeholder for the player view
+            if let youtubeID = video.youtubeID {
+                YouTubePlayerView2(videoID: youtubeID, isPlaying: $isVisible)
+            } else if let player = player {
                 VideoPlayer(player: player)
                     .containerRelativeFrame([.horizontal, .vertical])
                     .scaledToFill()
                     .ignoresSafeArea()
-                    .onAppear {
-                        setupAVPlayer(url: url)
-                        isPlaying = true
-                    }
-                    .onDisappear {
-                        player?.pause()
-                        player = nil
-                        isPlaying = false
-                    }
-            } else if let youtubeID = video.youtubeID {
-                YouTubePlayerView2(videoID: youtubeID)
-                    .containerRelativeFrame([.horizontal, .vertical])
-                    .scaledToFill()
-                    .ignoresSafeArea()
+            } else {
+                // Show a black background while the player is being prepared
+                Rectangle().fill(Color.black)
             }
-            
+
+            // Your overlay UI remains unchanged
             VStack(alignment: .leading, spacing: 8) {
                 Spacer()
                 Text(video.title).font(.title2).bold().foregroundColor(.white).lineLimit(2)
@@ -109,16 +105,26 @@ struct VideoSlideView: View {
             .padding([.leading, .bottom], 20)
             .padding(.trailing, 10)
         }
-    }
-    
-    private func setupAVPlayer(url: URL) {
-        player = AVPlayer(url: url)
-        player?.isMuted = true
-        player?.play()
-        NotificationCenter.default.removeObserver(self, name: .AVPlayerItemDidPlayToEndTime, object: nil)
-        NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: player?.currentItem, queue: .main) { _ in
-            player?.seek(to: .zero)
-            player?.play()
+        // CORRECTED LOGIC: This is the most important change.
+        .onChange(of: isVisible) {
+            if isVisible {
+                // When the view becomes visible, create a new player instance and play it.
+                guard let url = video.videoURL else { return }
+                player = AVPlayer(url: url)
+                player?.isMuted = true // Autoplay must be muted
+                player?.play()
+
+                // Set up an observer to loop the video when it ends.
+                NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: player?.currentItem, queue: .main) { _ in
+                    player?.seek(to: .zero)
+                    player?.play()
+                }
+            } else {
+                // When the view is no longer visible, pause and destroy the player
+                // to release memory and network resources.
+                player?.pause()
+                player = nil
+            }
         }
     }
 }
@@ -126,20 +132,26 @@ struct VideoSlideView: View {
 // MARK: - Feed View (No changes needed here)
 struct FeedView2: View {
     @Binding var videos: [ShortVideo2]
+    @State private var currentVideoID: UUID? //added
     
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
             LazyVStack(spacing: 0) {
                 ForEach(videos) { video in
-                    VideoSlideView(video: video)
+                    VideoSlideView(video: video, isVisible: .constant(currentVideoID == video.id))
                         .frame(height: UIScreen.main.bounds.height)
                         .clipped()
                         .id(video.id)
                 }
             }
+            .scrollTargetLayout() //added
+        }
+        .onAppear {
+            currentVideoID = videos.first?.id
         }
         .scrollTargetBehavior(.paging)
         .ignoresSafeArea()
+        .scrollPosition(id: $currentVideoID) //added
     }
 }
 
