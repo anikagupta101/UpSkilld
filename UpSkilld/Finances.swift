@@ -170,6 +170,8 @@ struct SmartCheckView: View {
                 Text("Smart Check")
                     .font(.title)
                     .bold()
+                Text("What's the price of the item you want to buy?")
+                    .font(.title2)
                 
                 TextField("Enter smart check input", text: $checkInput)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
