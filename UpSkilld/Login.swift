@@ -66,7 +66,7 @@ struct Login: View {
                         .bold()
                         .padding(.horizontal, 40)
                         .padding(.vertical, 12)
-                        .background(Color("NewGreen") custom green color
+                        .background(Color("NewGreen"))
                         .foregroundColor(.white)
                         .cornerRadius(12)
                         Spacer()
