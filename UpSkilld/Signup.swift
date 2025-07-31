@@ -25,7 +25,6 @@ struct Signup: View {
                             .font(.title)
                             .bold()
                             .frame(maxWidth: .infinity, alignment: .center)
-                            .foregroundColor(.black)
 
                         Group {
                             TextField("First Name", text: $firstName)
@@ -33,7 +32,6 @@ struct Signup: View {
                             TextField("Email", text: $email)
                                 .keyboardType(.emailAddress)
                             DatePicker("Birthday", selection: $birthday, displayedComponents: .date)
-                                .foregroundColor(.black)
                             TextField("Grade", text: $grade)
                             TextField("Create Username", text: $username)
                                 .autocapitalization(.none)
@@ -73,38 +71,29 @@ struct Signup: View {
 
                         HStack {
                             Spacer()
-                            
-                            Button(action: {
+                            Button("Sign Up") {
                                 if validateInputs() {
                                     saveUserData()
                                     goToLogin = true
                                 }
-                            }) {
-                                Text("Sign Up")
-                                    .bold()
-                                    .padding(.horizontal, 40)
-                                    .padding(.vertical, 12)
-                                    .background(Color("NewGreen"))
-                                    .foregroundColor(.white)
-                                    .cornerRadius(12)
                             }
-                            
+                            .bold()
+                            .padding(.horizontal, 40)
+                            .padding(.vertical, 12)
+                            .background(Color("NewGreen"))
+                            .foregroundColor(.white)
+                            .cornerRadius(12)
                             Spacer()
                         }
-                        .padding(.top, 10)
-
-                        Spacer()
                     }
                     .padding()
                 }
             }
-            .navigationTitle("Sign Up")
         }
     }
 
     func validateInputs() -> Bool {
-        if firstName.isEmpty || lastName.isEmpty || email.isEmpty ||
-            grade.isEmpty || username.isEmpty || password.isEmpty {
+        if firstName.isEmpty || lastName.isEmpty || email.isEmpty || grade.isEmpty || username.isEmpty || password.isEmpty {
             errorMessage = "Please fill in all fields."
             return false
         }
@@ -115,6 +104,7 @@ struct Signup: View {
             errorMessage = "Invalid birthday."
             return false
         }
+
         if age < 13 || age > 18 {
             errorMessage = "You must be between 13 and 18 years old."
             return false
@@ -135,17 +125,17 @@ struct Signup: View {
     }
 
     func saveUserData() {
-        UserDefaults.standard.set(firstName, forKey: "firstName")
-        UserDefaults.standard.set(lastName, forKey: "lastName")
-        UserDefaults.standard.set(email, forKey: "email")
-        UserDefaults.standard.set(birthday, forKey: "birthday")
-        UserDefaults.standard.set(grade, forKey: "grade")
-        UserDefaults.standard.set(username.trimmingCharacters(in: .whitespacesAndNewlines), forKey: "username")
-        UserDefaults.standard.set(password.trimmingCharacters(in: .whitespacesAndNewlines), forKey: "password")
+        let trimmedUsername = username.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedPassword = password.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        print("Saved username: \(username), password: \(password)")
+        UserDefaults.standard.set(trimmedUsername, forKey: "username")
+        UserDefaults.standard.set(trimmedPassword, forKey: "password")
+
+        print("Saved username: \(trimmedUsername)")
+        print("Saved password: \(trimmedPassword)")
     }
 }
+
 
 
 #Preview {

@@ -14,11 +14,7 @@ struct Login: View {
                     .resizable()
                     .ignoresSafeArea()
                     .allowsHitTesting(false)
-                
-                    .onTapGesture {
-                        hideKeyboard()
-                    }
-                
+
                 VStack(spacing: 20) {
                     Text("Login")
                         .font(.largeTitle)
@@ -55,13 +51,16 @@ struct Login: View {
                             .font(.caption)
                     }
 
+                    NavigationLink(destination: Home(), isActive: $goToHome) {
+                        EmptyView()
+                    }
+
                     HStack {
                         Spacer()
                         Button("Login") {
                             if validateLogin() {
                                 goToHome = true
                             }
-                            hideKeyboard()
                         }
                         .bold()
                         .padding(.horizontal, 40)
@@ -71,7 +70,6 @@ struct Login: View {
                         .cornerRadius(12)
                         Spacer()
                     }
-
                 }
                 .padding()
             }
@@ -82,13 +80,9 @@ struct Login: View {
     func validateLogin() -> Bool {
         let savedUsername = UserDefaults.standard.string(forKey: "username")?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let savedPassword = UserDefaults.standard.string(forKey: "password")?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+
         let inputUsername = enteredUsername.trimmingCharacters(in: .whitespacesAndNewlines)
         let inputPassword = enteredPassword.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        print("Entered username: \(inputUsername)")
-        print("Saved username: \(savedUsername)")
-        print("Entered password: \(inputPassword)")
-        print("Saved password: \(savedPassword)")
 
         if inputUsername.isEmpty || inputPassword.isEmpty {
             loginErrorMessage = "Please enter username and password."
@@ -104,6 +98,7 @@ struct Login: View {
         return true
     }
 }
+
 
 
 #Preview {
