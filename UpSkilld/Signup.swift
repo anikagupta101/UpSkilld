@@ -22,7 +22,7 @@ struct Signup: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {
                         Text("Create an Account")
-                            .font(.largeTitle)
+                            .font(.title)
                             .bold()
                             .frame(maxWidth: .infinity, alignment: .center)
                             .foregroundColor(.black)
@@ -71,18 +71,25 @@ struct Signup: View {
                             EmptyView()
                         }
 
-                        Button(action: {
-                            if validateInputs() {
-                                saveUserData()
-                                goToLogin = true
+                        HStack {
+                            Spacer()
+                            
+                            Button(action: {
+                                if validateInputs() {
+                                    saveUserData()
+                                    goToLogin = true
+                                }
+                            }) {
+                                Text("Sign Up")
+                                    .bold()
+                                    .padding(.horizontal, 40)
+                                    .padding(.vertical, 12)
+                                    .background(Color("NewGreen"))
+                                    .foregroundColor(.white)
+                                    .cornerRadius(12)
                             }
-                        }) {
-                            Text("Sign Up")
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color.blue)
-                                .foregroundColor(.white)
-                                .cornerRadius(12)
+                            
+                            Spacer()
                         }
                         .padding(.top, 10)
 

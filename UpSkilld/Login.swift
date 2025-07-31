@@ -55,33 +55,23 @@ struct Login: View {
                             .font(.caption)
                     }
 
-                    Button("Login") {
-                        if validateLogin() {
-                            goToHome = true
+                    HStack {
+                        Spacer()
+                        Button("Login") {
+                            if validateLogin() {
+                                goToHome = true
+                            }
+                            hideKeyboard()
                         }
-                        hideKeyboard()
+                        .bold()
+                        .padding(.horizontal, 40)
+                        .padding(.vertical, 12)
+                        .background(Color("NewGreen") custom green color
+                        .foregroundColor(.white)
+                        .cornerRadius(12)
+                        Spacer()
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(12)
-                    
-                    //BEG OF TEST CODE
-                    Button("BYPASS LOGIN") {
-                        goToHome = true
-                        hideKeyboard()
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.purple)
-                    .foregroundColor(.white)
-                    .cornerRadius(12)
-                    //END OF TEST CODE
-                    
-                    NavigationLink(destination: Home(), isActive: $goToHome) {
-                        EmptyView()
-                    }
+
                 }
                 .padding()
             }
