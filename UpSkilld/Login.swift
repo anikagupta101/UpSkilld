@@ -13,6 +13,9 @@ struct Login: View {
                 Image("backgroundImage")
                     .resizable()
                     .ignoresSafeArea()
+                    .onTapGesture {
+                        hideKeyboard()
+                    }
                     .allowsHitTesting(false)
 
                 VStack(spacing: 20) {
