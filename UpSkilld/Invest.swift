@@ -68,7 +68,6 @@ struct Invest: View {
                     .foregroundColor(.black)
                 }
             }
-            .navigationBarHidden(true)
         }
     }
 }
