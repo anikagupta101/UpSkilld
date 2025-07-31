@@ -10,15 +10,13 @@ struct Home: View {
                     .ignoresSafeArea()
 
                 VStack(spacing: 24) {
-
                     HStack {
                         Text("Hi, \(firstName)! 👋")
                             .font(.system(size: 32, weight: .bold))
                             .foregroundColor(.black)
-                            .offset(x: 20, y:30)
+                            .offset(x: 20, y: 30)
                         Spacer()
                     }
-
 
                     Text("UpSkilld")
                         .font(.system(size: 50, weight: .bold))
@@ -28,30 +26,29 @@ struct Home: View {
 
                     Spacer()
 
-  
                     VStack(spacing: 25) {
                         NavigationLink(destination: Finances()) {
-                            HomeButton(title: "Finances", background: Color("NewGreen"), textColor: .white)
+                            HomeButton(title: "Finances", background: Color("NewGreen").opacity(0.5), textColor: .white)
                                 .frame(width: 190)
-                                .offset(y:-30)
+                                .offset(y: -30)
                         }
 
                         NavigationLink(destination: Invest()) {
-                            HomeButton(title: "Invest", background: Color("NewGreen"), textColor: .white)
+                            HomeButton(title: "Invest", background: Color("NewGreen").opacity(0.5), textColor: .white)
                                 .frame(width: 190)
-                                .offset(y:-30)
+                                .offset(y: -30)
                         }
 
                         NavigationLink(destination: ShortFormContent()) {
-                            HomeButton(title: "Ups", background: Color("NewGreen"), textColor: .white)
+                            HomeButton(title: "Ups", background: Color("NewGreen").opacity(0.5), textColor: .white)
                                 .frame(width: 190)
-                                .offset(y:-30)
+                                .offset(y: -30)
                         }
 
                         NavigationLink(destination: StockListView()) {
-                            HomeButton(title: "Explore Stocks", background: Color("NewGreen"), textColor: .white)
+                            HomeButton(title: "Explore Stocks", background: Color("NewGreen").opacity(0.5), textColor: .white)
                                 .frame(width: 190)
-                                .offset(y:-30)
+                                .offset(y: -30)
                         }
                     }
                     .padding(.top, 40)

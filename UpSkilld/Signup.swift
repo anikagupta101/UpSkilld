@@ -127,16 +127,17 @@ struct Signup: View {
     func saveUserData() {
         let trimmedUsername = username.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedPassword = password.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedFirstName = firstName.trimmingCharacters(in: .whitespacesAndNewlines)
 
         UserDefaults.standard.set(trimmedUsername, forKey: "username")
         UserDefaults.standard.set(trimmedPassword, forKey: "password")
+        UserDefaults.standard.set(trimmedFirstName, forKey: "firstName") // ✅ Add this
 
         print("Saved username: \(trimmedUsername)")
         print("Saved password: \(trimmedPassword)")
+        print("Saved first name: \(trimmedFirstName)")
     }
 }
-
-
 
 #Preview {
     Signup()
