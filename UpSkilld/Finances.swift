@@ -64,7 +64,7 @@ struct Finances: View {
                             
                         }
                         .padding()
-                        .background(Color.blue)
+                        .background(Color.newGreen)
                         .foregroundColor(.white)
                         .cornerRadius(10)
                         
@@ -146,7 +146,7 @@ struct LabelView: View{
                        .font(.system(size: 16, weight: .medium))
                        .padding(.horizontal, 12)
                        .padding(.vertical, 6)
-                       .background(Color.blue.opacity(0.2))
+                       .background(Color.newGreen.opacity(0))
                        .foregroundColor(.blue)
                        .clipShape(Capsule())
                }
@@ -190,7 +190,7 @@ struct SmartCheckView: View {
                         
                 }
                 .padding()
-                .background(Color.blue)
+                .background(Color.newGreen)
                 .foregroundColor(.white)
                 .cornerRadius(10)
                 
