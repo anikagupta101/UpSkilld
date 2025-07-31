@@ -134,9 +134,11 @@ struct FeedView2: View {
                     VideoSlideView(video: video)
                         .frame(height: UIScreen.main.bounds.height)
                         .clipped()
+                        .id(video.id)
                 }
             }
         }
+        .scrollTargetBehavior(.paging)
         .ignoresSafeArea()
     }
 }
