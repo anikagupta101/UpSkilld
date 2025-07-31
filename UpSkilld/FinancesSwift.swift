@@ -33,17 +33,21 @@ class Finance{
         smartCheck = sc
         self.bool = bool
         
-        if smartCheck >= 0 && smartCheck <= (0.3*wants) {
-            //print("here")
-            str = "This won't make a dent in your wants budget! Go ahead and enjoy it!"
-        } else if smartCheck >= (0.31 * wants) && smartCheck <= (0.6*wants){
-                    str = "This takes up a good chunk. Is it worth it or do you want to save it for future use?"
-        } else if smartCheck >= (0.61 * wants) && smartCheck <= (0.85 * wants){
-            str = "This is more you your fun money. Treat yourself, or wait for something bigger?"
+        
+        if(smartCheck > wants){
+            str = "You're wants budget isn't that high"
         } else{
-            str = "This maxes out your \"wants\" budget. It's doable, but are you ok with zero wiggle room?"
+            if smartCheck >= 0 && smartCheck <= (0.3*wants) {
+                //print("here")
+                str = "This won't make a dent in your wants budget! Go ahead and enjoy it!"
+            } else if smartCheck >= (0.31 * wants) && smartCheck <= (0.6*wants){
+                        str = "This takes up a good chunk. Is it worth it or do you want to save it for future use?"
+            } else if smartCheck >= (0.61 * wants) && smartCheck <= (0.85 * wants){
+                str = "This is more you your fun money. Treat yourself, or wait for something bigger?"
+            } else{
+                str = "This maxes out your \"wants\" budget. It's doable, but are you ok with zero wiggle room?"
+            }
         }
-        print(smartCheck)
     }
     
 }
