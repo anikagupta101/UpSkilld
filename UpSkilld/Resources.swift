@@ -1,10 +1,3 @@
-//
-//  Resources.swift
-//  UpSkilld
-//
-//  Created by Scholar on 7/29/25.
-//
-
 import SwiftUI
 
 struct Resources: View {
@@ -13,62 +6,74 @@ struct Resources: View {
             Image("backgroundImage")
                 .resizable()
                 .ignoresSafeArea()
-               // .scaledToFill()
-               // .allowsHitTesting(false)
-            
-            VStack {
-                Text("Welcome to resources!")
-                    .font(.title)
-                    .frame(width: 300, height: 75)
-                
-                Text("Investing for Teens: Websites/Articles")
-                Link(destination: URL(string:"https://www.fidelity.com/learning-center/personal-finance/teach-teens-investing")!) {
-                    Text("Fidelity - Investing basics for teens")
-                } //closes Link
-                .padding()
-                Link(destination: URL(string:"https://www.teenvestor.com/")!) {
-                    Text("TeenVestor - Investing for Teens: stocks, funds, & cryptos")
-                } //closes Link
-                .padding()
-                Link(destination: URL(string:"https://money.usnews.com/investing/articles/investing-for-teens-how-to-invest-money-as-a-teenager")!) {
-                    Text("U.S. News - Investing for Teens: How to Invest Money as a Teenager")
-                } //closes Link
-                .padding()
-                Link(destination: URL(string:"https://www.investopedia.com/investing-for-teens-7111843")!) {
-                    Text("Investopedia - Investing for Teens: What They Should Know")
-                } //closes Link
-                .padding()
-                Link(destination: URL(string:"https://collegemoneytips.com/stock-market-investing-for-teens/")!) {
-                    Text("College Money Tips - The Basics of Stock Market Investing: What Every Parent Should Know About Investing for Teens")
-                } //closes Link
-                .padding()
-                .frame(width: 300, height: 100)
-                
-                Text("Financial Literacy for Teens: Websites/Articles")
-                Link(destination: URL(string:"https://www.khanacademy.org/college-careers-more/financial-literacy")!) {
-                    Text("Khan Academy - Financial Literacy")
-                } //closes Link
-                .padding()
-                Link(destination: URL(string:"https://www.teenlife.com/blog/10-online-resources-student-financial-literacy/")!) {
-                    Text("TeenLife - 10 Online Resources for Student Financial Literacy")
-                } //closes Link
-                .padding()
-                Link(destination: URL(string:"https://www.investopedia.com/terms/f/financial-literacy.asp")!) {
-                    Text("Investopedia - Financial Literacy: What It Is, and Why It Is So Important to Teach Teens")
-                } //closes Link
-                .padding()
-                Link(destination: URL(string:"https://www.fdic.gov/consumer-resource-center/money-smart")!) {
-                    Text("FDIC - Money Smart")
-                } //closes Link
-                .padding()
-                Link(destination: URL(string:"https://www.creditkarma.com/financial-planning/i/budgeting-for-teens")!) {
-                    Text("Credit Karma - Budgeting for teens: 18 tips for growing your money young")
-                } //closes Link
-                .padding()
-            } //closes VStack
-        } //closes z stack
+
+            ScrollView {
+                VStack(alignment: .leading, spacing: 24) {
+                    Text("Resources")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                        .foregroundColor(Color("NewGreen"))
+                        .padding(.top, 20)
+                        .frame(maxWidth: .infinity, alignment: .center)
+
+                    Group {
+                        SectionHeader(title: "📈 Investing for Teens")
+
+                        ResourceLink(title: "Fidelity - Investing basics for teens", url: "https://www.fidelity.com/learning-center/personal-finance/teach-teens-investing")
+                        ResourceLink(title: "TeenVestor - Stocks, Funds, & Crypto", url: "https://www.teenvestor.com/")
+                        ResourceLink(title: "U.S. News - How to Invest as a Teen", url: "https://money.usnews.com/investing/articles/investing-for-teens-how-to-invest-money-as-a-teenager")
+                        ResourceLink(title: "Investopedia - What Teens Should Know", url: "https://www.investopedia.com/investing-for-teens-7111843")
+                        ResourceLink(title: "College Money Tips - Investing Basics", url: "https://collegemoneytips.com/stock-market-investing-for-teens/")
+                    }
+
+                    Group {
+                        SectionHeader(title: "💵 Financial Literacy")
+
+                        ResourceLink(title: "Khan Academy - Financial Literacy", url: "https://www.khanacademy.org/college-careers-more/financial-literacy")
+                        ResourceLink(title: "TeenLife - 10 Financial Literacy Resources", url: "https://www.teenlife.com/blog/10-online-resources-student-financial-literacy/")
+                        ResourceLink(title: "Investopedia - Why It Matters", url: "https://www.investopedia.com/terms/f/financial-literacy.asp")
+                        ResourceLink(title: "FDIC - Money Smart", url: "https://www.fdic.gov/consumer-resource-center/money-smart")
+                        ResourceLink(title: "Credit Karma - Budgeting for Teens", url: "https://www.creditkarma.com/financial-planning/i/budgeting-for-teens")
+                    }
+
+                    Spacer(minLength: 40)
+                }
+                .padding(.horizontal, 24)
+                .padding(.bottom, 60)
+                .foregroundColor(.black)
+            }
+        }
     }
-} //closes struct
+}
+
+struct SectionHeader: View {
+    let title: String
+
+    var body: some View {
+        Text(title)
+            .font(.title2)
+            .fontWeight(.semibold)
+            .foregroundColor(Color("NewGreen"))
+    }
+}
+
+struct ResourceLink: View {
+    let title: String
+    let url: String
+
+    var body: some View {
+        Link(destination: URL(string: url)!) {
+            Text(title)
+                .font(.body)
+                .padding()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color.white.opacity(0.9))
+                .foregroundColor(Color("NewGreen"))
+                .cornerRadius(12)
+                .shadow(color: .black.opacity(0.1), radius: 3, x: 0, y: 2)
+        }
+    }
+}
 
 #Preview {
     Resources()
