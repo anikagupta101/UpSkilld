@@ -128,14 +128,19 @@ struct FeedView2: View {
     @Binding var videos: [ShortVideo2]
     
     var body: some View {
-        TabView {
-            ForEach(videos) { video in
-                VideoSlideView(video: video)
+        ScrollView(.vertical, showsIndicators: false) {
+            LazyVStack(spacing: 0) {
+                ForEach(videos) { video in
+                    VideoSlideView(video: video)
+                        .frame(height: UIScreen.main.bounds.height)
+                        .clipped()
+                }
             }
         }
-        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+        .ignoresSafeArea()
     }
 }
+
 
 // MARK: - Post Video View
 struct PostVideoView: View {
