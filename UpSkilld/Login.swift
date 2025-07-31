@@ -16,7 +16,7 @@ struct Login: View {
                     .onTapGesture {
                         hideKeyboard()
                     }
-                    .allowsHitTesting(false)
+                    //.allowsHitTesting(false)
 
                 VStack(spacing: 20) {
                     Text("Login")

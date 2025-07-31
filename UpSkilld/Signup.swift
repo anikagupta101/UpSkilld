@@ -18,6 +18,9 @@ struct Signup: View {
                 Image("backgroundImage")
                     .resizable()
                     .ignoresSafeArea()
+                    .onTapGesture {
+                        hideKeyboard()
+                    }
 
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {
@@ -89,6 +92,7 @@ struct Signup: View {
                     .padding()
                 }
             }
+            .ignoresSafeArea(.keyboard, edges: .bottom) //might not work?
         }
     }
 
