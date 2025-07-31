@@ -15,7 +15,7 @@ struct Invest: View {
                 .ignoresSafeArea()
                 .allowsHitTesting(false)
             VStack(spacing:10) {
-                //code for daily tip, beginner tips navigation, tutorials navigation, and resources navigation
+                //code for daily tip, beginner tips navigation, videos navigation, and resources navigation
                 
                 Text("Investing!")
                     .font(.title)
@@ -38,8 +38,8 @@ struct Invest: View {
                         .fontWeight(.semibold)
                 } //closes NavigationLink
                 
-                NavigationLink(destination: Tutorials()) {
-                    Text("Tutorials button")
+                NavigationLink(destination: Videos()) {
+                    Text("Videos button")
                         .font(.title)
                         .fontWeight(.semibold)
                 } //closes NavigationLink

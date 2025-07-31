@@ -1,14 +1,14 @@
 //
-//  Tutorials.swift
+//  Videos.swift
 //  UpSkilld
 //
-//  Created by Scholar on 7/29/25.
+//  Created by Scholar on 7/31/25.
 //
 
 import SwiftUI
 import WebKit
 
-struct Tutorials: View {
+struct Videos: View {
     var body: some View {
         ZStack {
             Image("backgroundImage")
@@ -79,5 +79,5 @@ struct YouTubePlayerView: UIViewRepresentable {
 
 
 #Preview {
-    Tutorials()
+    Videos()
 }
