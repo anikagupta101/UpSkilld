@@ -92,6 +92,7 @@ struct Signup: View {
                     .padding()
                 }
             }
+            .ignoresSafeArea(.keyboard, edges: .bottom) //might not work?
         }
     }
 
