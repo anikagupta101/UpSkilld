@@ -1,69 +1,65 @@
 import SwiftUI
 import AVKit
 import WebKit
+import PhotosUI
+import MobileCoreServices // Import for UTType.movie
 
-// MARK: - Model
+// MARK: - Model (No changes needed here)
 struct ShortVideo2: Identifiable {
     let id = UUID()
     let title: String
     let username: String
     let videoURL: URL? // For local/remote AVPlayer content
     let youtubeID: String? // For YouTube embedded content
+    
+    // Initializer for local/remote video URLs
+    init(title: String, username: String, videoURL: URL?) {
+        self.title = title
+        self.username = username
+        self.videoURL = videoURL
+        self.youtubeID = nil
+    }
+    
+    // Initializer for YouTube videos
+    init(title: String, username: String, youtubeID: String?) {
+        self.title = title
+        self.username = username
+        self.videoURL = nil
+        self.youtubeID = youtubeID
+    }
 }
 
-// MARK: - YouTube Player View (WebView)
+// MARK: - YouTube Player View (WebView) (No changes needed here)
 struct YouTubePlayerView2: UIViewRepresentable {
     let videoID: String
     
     func makeUIView(context: Context) -> WKWebView {
         let webView = WKWebView()
-        webView.scrollView.isScrollEnabled = false // Prevent scrolling within the web view
-        webView.navigationDelegate = context.coordinator // Set the navigation delegate
-        // Allow inline playback and autoplay
+        webView.scrollView.isScrollEnabled = false
+        webView.navigationDelegate = context.coordinator
         webView.configuration.allowsInlineMediaPlayback = true
         let preferences = WKPreferences()
         preferences.javaScriptCanOpenWindowsAutomatically = true
         webView.configuration.preferences = preferences
-        
         return webView
     }
     
     func updateUIView(_ uiView: WKWebView, context: Context) {
         let embedURLString = "https://www.youtube.com/embed/\(videoID)?playsinline=1&autoplay=1&controls=0&showinfo=0&loop=1&playlist=\(videoID)&modestbranding=1"
-        // Explanation of parameters:
-        // playsinline=1: Allows playback in the WebView itself on iOS
-        // autoplay=1: Starts playing automatically
-        // controls=0: Hides YouTube player controls
-        // showinfo=0: Hides video title and uploader info
-        // loop=1 & playlist=VIDEO_ID: Makes the video loop
-        // modestbranding=1: Removes YouTube logo from the control bar
-        
-        // Note: Autoplay on mobile browsers can be tricky and might require user interaction first.
-        // For a true TikTok experience, consider using YouTube's iOS Player Helper library,
-        // which gives more control than a simple WKWebView embed. However, for a quick solution,
-        // this is a good start.
-        
         if let url = URL(string: embedURLString) {
             uiView.load(URLRequest(url: url))
         }
     }
     
-    // MARK: - Coordinator for WKWebViewDelegate
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
     
     class Coordinator: NSObject, WKNavigationDelegate {
         var parent: YouTubePlayerView2
-        
-        init(_ parent: YouTubePlayerView2) {
-            self.parent = parent
-        }
-        
-        // Handle potential navigation issues or allow specific URLs
+        init(_ parent: YouTubePlayerView2) { self.parent = parent }
         func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
             if navigationAction.navigationType == .linkActivated {
-                // Prevent opening links within the webview, e.g., if user taps on YouTube logo
                 decisionHandler(.cancel)
             } else {
                 decisionHandler(.allow)
@@ -72,135 +68,273 @@ struct YouTubePlayerView2: UIViewRepresentable {
     }
 }
 
-
-// MARK: - Video Slide View
+// MARK: - Video Slide View (No changes needed here)
 struct VideoSlideView: View {
     let video: ShortVideo2
     @State private var player: AVPlayer?
-    @State private var isPlaying: Bool = false // To manage play/pause state
+    @State private var isPlaying: Bool = false
     
     var body: some View {
-        ZStack(alignment: .bottomLeading) { // Put overlay content within ZStack
+        ZStack(alignment: .bottomLeading) {
             if let url = video.videoURL {
                 VideoPlayer(player: player)
-                    // The .container, .scaledToFill, .ignoresSafeArea are crucial for filling the screen
-                    .containerRelativeFrame([.horizontal, .vertical]) // SwiftUI 5+ for filling screen
+                    .containerRelativeFrame([.horizontal, .vertical])
                     .scaledToFill()
-                    .ignoresSafeArea() // Ensure it goes edge to edge
+                    .ignoresSafeArea()
                     .onAppear {
                         setupAVPlayer(url: url)
                         isPlaying = true
                     }
                     .onDisappear {
                         player?.pause()
-                        player = nil // Release player when view disappears
+                        player = nil
                         isPlaying = false
                     }
             } else if let youtubeID = video.youtubeID {
                 YouTubePlayerView2(videoID: youtubeID)
-                    .containerRelativeFrame([.horizontal, .vertical]) // Fill screen
-                    .scaledToFill() // Or .scaledToFit depending on desired YouTube behavior
+                    .containerRelativeFrame([.horizontal, .vertical])
+                    .scaledToFill()
                     .ignoresSafeArea()
-                    // Note: YouTube playback controls within WKWebView are less controllable
-                    // than AVPlayer. Autoplay might not always work without user interaction.
             }
             
-            // Overlay text/buttons
-            VStack(alignment: .leading, spacing: 8) { // Increased spacing for better readability
-                Spacer() // Pushes content to the bottom
-                
-                Text(video.title)
-                    .font(.title2)
-                    .bold()
-                    .foregroundColor(.white)
-                    .lineLimit(2) // Limit lines for long titles
-                
-                Text("@\(video.username)")
-                    .font(.subheadline)
-                    .foregroundColor(.white.opacity(0.8))
-                
-                // Example Interaction Buttons (replace with actual functionality)
-                HStack(spacing: 20) { // Increased spacing between buttons
-                    Button {
-                        // Action for Heart
-                        print("Liked \(video.title)")
-                    } label: {
-                        Image(systemName: "heart.fill")
-                            .font(.title2) // Make icons larger
-                            .foregroundColor(.white)
-                    }
-                    
-                    Button {
-                        // Action for Share
-                        print("Shared \(video.title)")
-                    } label: {
-                        Image(systemName: "square.and.arrow.up")
-                            .font(.title2) // Make icons larger
-                            .foregroundColor(.white)
-                    }
+            VStack(alignment: .leading, spacing: 8) {
+                Spacer()
+                Text(video.title).font(.title2).bold().foregroundColor(.white).lineLimit(2)
+                Text("@\(video.username)").font(.subheadline).foregroundColor(.white.opacity(0.8))
+                HStack(spacing: 20) {
+                    Button { print("Liked \(video.title)") } label: { Image(systemName: "heart.fill").font(.title2).foregroundColor(.white) }
+                    Button { print("Shared \(video.title)") } label: { Image(systemName: "square.and.arrow.up").font(.title2).foregroundColor(.white) }
                 }
             }
-            .padding([.leading, .bottom], 20) // Adjust padding for better placement
-            .padding(.trailing, 10) // Small padding on the right for balance
+            .padding([.leading, .bottom], 20)
+            .padding(.trailing, 10)
         }
     }
     
     private func setupAVPlayer(url: URL) {
         player = AVPlayer(url: url)
-        player?.isMuted = true // Start muted
+        player?.isMuted = true
         player?.play()
-        
-        // Loop the video
-        NotificationCenter.default.removeObserver(self, name: .AVPlayerItemDidPlayToEndTime, object: nil) // Remove previous observers
-        NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime,
-                                               object: player?.currentItem,
-                                               queue: .main) { _ in
-            player?.seek(to: .zero) // Go to beginning
-            player?.play() // Play again
+        NotificationCenter.default.removeObserver(self, name: .AVPlayerItemDidPlayToEndTime, object: nil)
+        NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: player?.currentItem, queue: .main) { _ in
+            player?.seek(to: .zero)
+            player?.play()
         }
     }
 }
 
-// MARK: - Feed View
+// MARK: - Feed View (No changes needed here)
 struct FeedView2: View {
-    let videos: [ShortVideo2]
+    @Binding var videos: [ShortVideo2]
     
     var body: some View {
-        // Use TabView directly without GeometryReader and rotations for a native vertical scroll
-        // Each TabView item will naturally fill the screen.
         TabView {
             ForEach(videos) { video in
                 VideoSlideView(video: video)
             }
         }
-        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never)) // Swipe vertically
-        //.ignoresSafeArea() // Let content extend to safe areas
+        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
     }
 }
 
-// MARK: - Main ShortFormContent View
-struct ShortFormContent: View {
-    let sampleVideos: [ShortVideo2] = [
-        // Using sample YouTube IDs for demonstration
-        // Note: For actual app, you'd likely fetch real vertical video URLs
-        ShortVideo2(title: "Finance", username: "finance!", videoURL: nil, youtubeID: "lWu2fw6APM4"),
-        ShortVideo2(title: "Investing", username: "investing", videoURL: nil, youtubeID: "vKuK8AVL-1o"),
-        ShortVideo2(title: "Millionare Mindset", username: "millionares", videoURL: nil, youtubeID: "l52CNKgAP7g"),
-        ShortVideo2(title: "Student Discounts", username: "discounts", videoURL: nil, youtubeID: "gjx_zc0Ut7U"),
-        ShortVideo2(title: "Passive Income", username: "passiveincome", videoURL: nil, youtubeID: "aGLjcLFup94"),
-        ShortVideo2(title: "Student Scholarships", username: "scholarships", videoURL: nil, youtubeID: "NF_dqRMssa8"),
-        ShortVideo2(title: "FAFSA", username: "fafsa", videoURL: nil, youtubeID: "XrByfVYcugU"),
-    ]
+// MARK: - Post Video View
+struct PostVideoView: View {
+    @Environment(\.dismiss) var dismiss
+    @Binding var videos: [ShortVideo2]
+    
+    @State private var videoTitle: String = ""
+    @State private var username: String = ""
+    @State private var videoInput: String = "" // For URL input
+    @State private var selectedItem: PhotosPickerItem? = nil // For local video selection
+    @State private var localVideoURL: URL? = nil // To store the temporary URL of the picked video
+    @State private var showingAlert = false
+    @State private var alertMessage = ""
     
     var body: some View {
-        FeedView2(videos: sampleVideos)
-            .statusBarHidden(true) // Hide status bar for full immersive experience
+        NavigationView {
+            Form {
+                Section("Video Details") {
+                    TextField("Title", text: $videoTitle)
+                    TextField("Your Username", text: $username)
+                }
+                
+                Section("Video Source") {
+                    TextField("Enter YouTube URL or Direct Video URL", text: $videoInput)
+                        .autocapitalization(.none)
+                        .keyboardType(.URL)
+                    
+                    PhotosPicker(selection: $selectedItem, matching: .videos) {
+                        Label("Select MP4 from Library", systemImage: "video.fill")
+                    }
+                    .onChange(of: selectedItem) { newItem in
+                        Task {
+                            localVideoURL = nil // Reset previous local video URL
+                            if let item = newItem {
+                                do {
+                                    // Load the video as a URL, which is more efficient for large files
+                                    if let url = try await item.loadTransferable(type: URL.self) {
+                                        // The URL returned by PhotosPicker is often a temporary file URL.
+                                        // For persistence, you'd copy this to a permanent location in your app's sandbox.
+                                        localVideoURL = url
+                                        videoInput = url.absoluteString // Update videoInput field for user to see
+                                        alertMessage = "Local video selected. Tap Save."
+                                    } else {
+                                        alertMessage = "Could not load video URL from Photos Picker."
+                                    }
+                                } catch {
+                                    print("Error loading video from PhotosPicker: \(error.localizedDescription)")
+                                    alertMessage = "Failed to load local video: \(error.localizedDescription)"
+                                }
+                            } else {
+                                alertMessage = "No video selected."
+                            }
+                            showingAlert = true
+                        }
+                    }
+                    
+                    if let url = localVideoURL {
+                        Text("Selected Local Video: \(url.lastPathComponent)")
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                    }
+                }
+                
+                Button("Save Video") {
+                    saveVideo()
+                }
+                .alert("Status", isPresented: $showingAlert) {
+                    Button("OK") { }
+                } message: {
+                    Text(alertMessage)
+                }
+            }
+            .navigationTitle("New Short Video")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
+            }
+        }
+    }
+    
+    private func saveVideo() {
+        guard !videoTitle.isEmpty, !username.isEmpty else {
+            alertMessage = "Please fill in title and username."
+            showingAlert = true
+            return
+        }
+        
+        // Prioritize local video if selected via PhotosPicker
+        if let url = localVideoURL {
+            videos.insert(ShortVideo2(title: videoTitle, username: username, videoURL: url), at: 0)
+            alertMessage = "Local video added successfully!"
+            dismiss()
+            return // Exit after handling local video
+        }
+        
+        // If no local video, try to parse the URL string
+        if let url = URL(string: videoInput), url.scheme != nil {
+            if let youtubeID = extractYouTubeID(from: url) {
+                videos.insert(ShortVideo2(title: videoTitle, username: username, youtubeID: youtubeID), at: 0)
+                alertMessage = "YouTube video added successfully!"
+                dismiss()
+            } else if url.absoluteString.lowercased().hasSuffix(".mp4") || url.absoluteString.lowercased().hasSuffix(".mov") {
+                // Assume it's a direct video URL (MP4, MOV, etc.) if it has the correct extension
+                videos.insert(ShortVideo2(title: videoTitle, username: username, videoURL: url), at: 0)
+                alertMessage = "Direct video URL added successfully!"
+                dismiss()
+            } else {
+                alertMessage = "Could not identify video type. Please provide a valid YouTube URL or a direct link to an MP4/MOV file."
+                showingAlert = true
+            }
+        } else {
+            alertMessage = "Please enter a valid URL or select a local video."
+            showingAlert = true
+        }
+    }
+    
+    private func extractYouTubeID(from url: URL) -> String? {
+        let urlString = url.absoluteString
+        
+        // Pattern 1: Standard watch URL (https://www.youtube.com/embed/\(videoID)?playsinline=1&autoplay=1&controls=0&showinfo=0&loop=1&playlist=\(videoID)&modestbranding=1)
+        if let regex = try? NSRegularExpression(pattern: "v=([a-zA-Z0-9_-]+)", options: []),
+           let match = regex.firstMatch(in: urlString, options: [], range: NSRange(location: 0, length: urlString.utf16.count)) {
+            if let idRange = Range(match.range(at: 1), in: urlString) {
+                return String(urlString[idRange])
+            }
+        }
+        
+        // Pattern 2: Shortened youtu.be URL (youtube.com)
+        if let regex = try? NSRegularExpression(pattern: "youtu\\.be/([a-zA-Z0-9_-]+)", options: []),
+           let match = regex.firstMatch(in: urlString, options: [], range: NSRange(location: 0, length: urlString.utf16.count)) {
+            if let idRange = Range(match.range(at: 1), in: urlString) {
+                return String(urlString[idRange])
+            }
+        }
+        
+        // Pattern 3: Embedded URL (youtu.be)
+        if let regex = try? NSRegularExpression(pattern: "embed/([a-zA-Z0-9_-]+)", options: []),
+           let match = regex.firstMatch(in: urlString, options: [], range: NSRange(location: 0, length: urlString.utf16.count)) {
+            if let idRange = Range(match.range(at: 1), in: urlString) {
+                return String(urlString[idRange])
+            }
+        }
+        
+        // Pattern 4: Shorts URL (youtu.be/)
+        if let regex = try? NSRegularExpression(pattern: "/shorts/([a-zA-Z0-9_-]+)", options: []),
+           let match = regex.firstMatch(in: urlString, options: [], range: NSRange(location: 0, length: urlString.utf16.count)) {
+            if let idRange = Range(match.range(at: 1), in: urlString) {
+                return String(urlString[idRange])
+            }
+        }
+        
+        // Consider if the URL itself is just the ID (less common but possible)
+        if urlString.range(of: "^[a-zA-Z0-9_-]{11}$", options: .regularExpression) != nil {
+            return urlString
+        }
+
+        return nil
     }
 }
 
-// MARK: - Preview
+// MARK: - Main ShortFormContent View (No changes needed here)
+struct ShortFormContent: View {
+    @State private var sampleVideos: [ShortVideo2] = [
+        ShortVideo2(title: "Finance", username: "finance!", youtubeID: "lWu2fw6APM4"),
+        ShortVideo2(title: "Investing", username: "investing", youtubeID: "vKuK8AVL-1o"),
+        ShortVideo2(title: "Millionaire Mindset", username: "millionaires", youtubeID: "l52CNKgAP7g"),
+        ShortVideo2(title: "Student Discounts", username: "discounts", youtubeID: "gjx_zc0Ut7U"),
+        ShortVideo2(title: "Passive Income", username: "passiveincome", youtubeID: "aGLjcLFup94"),
+        ShortVideo2(title: "Student Scholarships", username: "scholarships", youtubeID: "NF_dqRMssa8"),
+        ShortVideo2(title: "FAFSA", username: "fafsa", youtubeID: "XrByfVYcugU"),
+    ]
+    
+    @State private var showingPostSheet = false
+    
+    var body: some View {
+        ZStack(alignment: .topTrailing) {
+            FeedView2(videos: $sampleVideos)
+                .statusBarHidden(true)
+            
+            Button {
+                showingPostSheet.toggle()
+            } label: {
+                Image(systemName: "plus.circle.fill")
+                    .font(.largeTitle)
+                    .foregroundColor(.white)
+                    .padding()
+                    .shadow(radius: 5)
+            }
+            .sheet(isPresented: $showingPostSheet) {
+                PostVideoView(videos: $sampleVideos)
+            }
+        }
+    }
+}
+
+// MARK: - Preview (No changes needed here)
 #Preview {
-    // No need for NavigationStack here unless your app's root is a NavStack
-    // For a standalone TikTok-like feed, it's typically full screen.
     ShortFormContent()
 }
