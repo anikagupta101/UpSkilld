@@ -43,7 +43,7 @@ struct Finances: View {
                             .keyboardType(.numberPad)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             .padding(.horizontal)
-                            .frame(width: 410, height: 40)
+                            .frame(width: 390, height: 40)
                         
                         Button("Save") {
                             if let income = Double(incomeText) {
