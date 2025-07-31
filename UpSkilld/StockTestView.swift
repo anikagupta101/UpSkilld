@@ -22,51 +22,58 @@ struct StockListView: View {
 
     var body: some View {
         NavigationStack {
-            List {
-                Section {
-                    NavigationLink("Track Investments") {
-                        InvestmentHistoryScreen(investments: investmentHistory, stockQuotes: stockQuotes)
+            ZStack {
+                Image("backgroundImage")
+                    .resizable()
+                    .ignoresSafeArea()
+
+                List {
+                    Section {
+                        NavigationLink("Track Investments") {
+                            InvestmentHistoryScreen(investments: investmentHistory, stockQuotes: stockQuotes)
+                        }
+                        .font(.headline)
+                        .padding(.vertical, 8)
                     }
-                    .font(.headline)
-                    .padding(.vertical, 8)
-                }
 
-                Section {
-                    ForEach(stockSymbols, id: \.self) { symbol in
-                        if let quote = stockQuotes[symbol] {
-                            HStack {
-                                VStack(alignment: .leading) {
-                                    Text(symbol)
-                                        .font(.headline)
-                                    Text("$\(quote.c, specifier: "%.2f")")
-                                        .foregroundColor(.gray)
-                                }
-                                Spacer()
-                                VStack(alignment: .trailing) {
-                                    Text(quote.dp ?? 0 >= 0 ? "+\(quote.dp!, specifier: "%.2f")%" : "\(quote.dp!, specifier: "%.2f")%")
-                                        .foregroundColor((quote.dp ?? 0) >= 0 ? .green : .red)
-
-                                    Button("Invest") {
-                                        showInvestSheet = true
-                                        selectedSymbol = symbol
-                                        selectedQuote = quote
-                                        investAmount = ""
-                                        sharesPurchased = nil
+                    Section {
+                        ForEach(stockSymbols, id: \.self) { symbol in
+                            if let quote = stockQuotes[symbol] {
+                                HStack {
+                                    VStack(alignment: .leading) {
+                                        Text(symbol)
+                                            .font(.headline)
+                                        Text("$\(quote.c, specifier: "%.2f")")
+                                            .foregroundColor(.gray)
                                     }
-                                    .font(.caption)
-                                    .buttonStyle(.borderedProminent)
+                                    Spacer()
+                                    VStack(alignment: .trailing) {
+                                        Text(quote.dp ?? 0 >= 0 ? "+\(quote.dp!, specifier: "%.2f")%" : "\(quote.dp!, specifier: "%.2f")%")
+                                            .foregroundColor((quote.dp ?? 0) >= 0 ? .green : .red)
+
+                                        Button("Invest") {
+                                            showInvestSheet = true
+                                            selectedSymbol = symbol
+                                            selectedQuote = quote
+                                            investAmount = ""
+                                            sharesPurchased = nil
+                                        }
+                                        .font(.caption)
+                                        .buttonStyle(.borderedProminent)
+                                    }
                                 }
+                            } else {
+                                Text("Loading \(symbol)...")
                             }
-                        } else {
-                            Text("Loading \(symbol)...")
                         }
                     }
                 }
-            }
-            .listStyle(.insetGrouped)
-            .navigationTitle("Explore Stocks")
-            .onAppear {
-                fetchAllStocks()
+                .listStyle(.insetGrouped)
+                .scrollContentBackground(.hidden) // Makes backgroundImage visible through List
+                .navigationTitle("Explore Stocks")
+                .onAppear {
+                    fetchAllStocks()
+                }
             }
             .sheet(isPresented: $showInvestSheet) {
                 if let symbol = selectedSymbol, let quote = selectedQuote {
@@ -127,36 +134,45 @@ struct StockListView: View {
     }
 }
 
+
 struct InvestmentHistoryScreen: View {
     let investments: [Investment]
-    let stockQuotes: [String: StockQuote]  // Add this parameter
+    let stockQuotes: [String: StockQuote]
 
     var body: some View {
-        List(investments) { investment in
-            VStack(alignment: .leading, spacing: 4) {
-                Text(investment.symbol)
-                    .font(.headline)
-                Text("Invested: $\(investment.amount, specifier: "%.2f")")
-                Text("Shares: \(investment.shares, specifier: "%.4f")")
-                Text("Date: \(investment.date.formatted(date: .abbreviated, time: .shortened))")
-                    .font(.caption)
-                    .foregroundColor(.gray)
+        ZStack {
+            Image("backgroundImage")
+                .resizable()
+                .ignoresSafeArea()
 
-                if let currentPrice = stockQuotes[investment.symbol]?.c {
-                    let buyPrice = investment.amount / investment.shares
-                    let profitLoss = (currentPrice - buyPrice) * investment.shares
-                    let profitLossColor = profitLoss >= 0 ? Color.green : Color.red
-
-                    Text("P/L: \(profitLoss >= 0 ? "+" : "")$\(profitLoss, specifier: "%.2f")")
-                        .foregroundColor(profitLossColor)
-                        .bold()
-                } else {
-                    Text("Current price unavailable")
+            List(investments) { investment in
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(investment.symbol)
+                        .font(.headline)
+                    Text("Invested: $\(investment.amount, specifier: "%.2f")")
+                    Text("Shares: \(investment.shares, specifier: "%.4f")")
+                    Text("Date: \(investment.date.formatted(date: .abbreviated, time: .shortened))")
+                        .font(.caption)
                         .foregroundColor(.gray)
-                        .italic()
+
+                    if let currentPrice = stockQuotes[investment.symbol]?.c {
+                        let buyPrice = investment.amount / investment.shares
+                        let profitLoss = (currentPrice - buyPrice) * investment.shares
+                        let profitLossColor = profitLoss >= 0 ? Color.green : Color.red
+
+                        Text("P/L: \(profitLoss >= 0 ? "+" : "")$\(profitLoss, specifier: "%.2f")")
+                            .foregroundColor(profitLossColor)
+                            .bold()
+                    } else {
+                        Text("Current price unavailable")
+                            .foregroundColor(.gray)
+                            .italic()
+                    }
                 }
+                .padding(.vertical, 4)
             }
-            .padding(.vertical, 4)
+            .listStyle(.insetGrouped)
+            .scrollContentBackground(.hidden)
         }
         .navigationTitle("Your Investments")
     }
