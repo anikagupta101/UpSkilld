@@ -9,53 +9,61 @@ struct Home: View {
                 Color(red: 0.96, green: 0.94, blue: 0.90)
                     .ignoresSafeArea()
 
-                VStack(alignment: .leading, spacing: 24) {
-                    Text("Home")
-                        .font(.system(size: 40, weight: .bold))
-                        .foregroundColor(.black)
+                VStack(spacing: 24) {
 
-                    if !firstName.isEmpty {
+                    HStack {
                         Text("Hi, \(firstName)! 👋")
-                            .font(.title2)
-                            .bold()
+                            .font(.system(size: 32, weight: .bold))
                             .foregroundColor(.black)
-                            .offset(y:20)
+                            .offset(x: 20, y:30)
+                        Spacer()
                     }
 
-                    VStack(spacing: 10) {
+
+                    Text("UpSkilld")
+                        .font(.system(size: 50, weight: .bold))
+                        .foregroundColor(Color("NewGreen"))
+                        .multilineTextAlignment(.center)
+                        .offset(y: 70)
+
+                    Spacer()
+
+  
+                    VStack(spacing: 25) {
                         NavigationLink(destination: Finances()) {
-                            HomeButton(title: "Finances", background: .white, textColor: .black)
-                                .offset(y:120)
+                            HomeButton(title: "Finances", background: Color("NewGreen").opacity(0.5), textColor: .white)
                                 .frame(width: 190)
+                                .offset(y:-50)
                         }
 
                         NavigationLink(destination: Invest()) {
-                            HomeButton(title: "Invest", background: .white, textColor: .black)
-                                .offset(y:140)
+                            HomeButton(title: "Invest", background: Color("NewGreen").opacity(0.5), textColor: .white)
                                 .frame(width: 190)
+                                .offset(y:-40)
                         }
 
                         NavigationLink(destination: ShortFormContent()) {
-                            HomeButton(title: "Ups", background: .white, textColor: .black)
-                                .offset(y:170)
+                            HomeButton(title: "Ups", background: Color("NewGreen").opacity(0.5), textColor: .white)
                                 .frame(width: 190)
+                                .offset(y:-30)
                         }
 
                         NavigationLink(destination: StockListView()) {
-                            HomeButton(title: "Explore Stocks", background: Color(red: 0.22, green: 0.55, blue: 0.32), textColor: .white)
-                                .offset(y:200)
-                                .frame(width: 230)
+                            HomeButton(title: "Explore Stocks", background: Color("NewGreen").opacity(0.5), textColor: .white)
+                                .frame(width: 190)
+                                .offset(y:-18)
                         }
                     }
+                    .padding(.top, 40)
 
-                    Spacer()
+                    Spacer(minLength: 40)
                 }
                 .padding()
             }
-            .navigationBarHidden(true) // Hides top bar so you can use your custom "Home" title
+            .navigationBarHidden(true)
         }
         .onAppear {
-            firstName = UserDefaults.standard.string(forKey: "firstName") ?? ""
+            firstName = UserDefaults.standard.string(forKey: "firstName") ?? "Investor"
         }
     }
 }
@@ -80,4 +88,3 @@ struct HomeButton: View {
 #Preview {
     Home()
 }
-  
